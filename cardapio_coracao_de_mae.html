@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardápio — Coração de Mãe</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#E8191A;--rdk:#B01010;--rlt:#FDF0F0;--blk:#1A0A0A;--wht:#FFFFFF;--g1:#F7F2F2;--g2:#EDE5E5;--tx:#1A0A0A;--tx2:#5A3A3A;--tx3:#9A7A7A}
+body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
+.hero{background:var(--red);padding:30px 20px 22px;position:relative;overflow:hidden;text-align:center}
+.hero::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.04) 0,rgba(255,255,255,0.04) 1px,transparent 0,transparent 50%);background-size:20px 20px}
+.logo{width:86px;height:86px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;margin:0 auto 11px;position:relative;z-index:1;border:3px solid rgba(255,255,255,0.22);overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hn{font-family:'Playfair Display',serif;font-size:27px;font-weight:700;color:white;position:relative;z-index:1}
+.hs{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-top:4px;position:relative;z-index:1}
+.ht{font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px;font-style:italic;position:relative;z-index:1}
+.admin-badge{position:fixed;top:10px;right:10px;z-index:500;background:var(--red);color:white;border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;letter-spacing:1px;display:none;cursor:pointer}
+.admin-mode .admin-badge{display:block}
+.nav{background:var(--blk);position:sticky;top:0;z-index:100;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.navrow{display:flex;min-width:max-content}
+.nb{background:transparent;color:rgba(255,255,255,0.48);border:none;padding:13px 15px;font-family:'Lato',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .18s}
+.nb:hover{color:rgba(255,255,255,0.78)}
+.nb.on{color:var(--red);border-bottom-color:var(--red)}
+.sec{padding-bottom:80px}
+.covhdr{position:relative;height:150px;overflow:hidden;display:flex;align-items:flex-end}
+.covbg{position:absolute;inset:0;background:var(--red);display:flex;align-items:center;justify-content:center}
+.covbg img{width:100%;height:100%;object-fit:cover;opacity:.4}
+.covbg .noc{font-size:60px;opacity:.18}
+.covol{position:absolute;inset:0;background:linear-gradient(to top,rgba(232,25,26,.93) 0%,rgba(232,25,26,.25) 100%)}
+.covinfo{position:relative;z-index:2;padding:14px 18px;width:100%;display:flex;align-items:flex-end;justify-content:space-between}
+.covtitle{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white}
+.covsub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:2px}
+.btncov{background:rgba(0,0,0,.38);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;display:none}
+.admin-mode .btncov{display:block}
+.subseclabel{background:var(--blk);color:rgba(255,255,255,.85);padding:9px 18px;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:1px;background:var(--g2)}
+.card{background:var(--wht);cursor:pointer;transition:background .15s;display:flex;flex-direction:column;position:relative}
+.card:hover{background:var(--rlt)}
+.cimg{width:100%;aspect-ratio:1;background:var(--g1);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.cimg img{width:100%;height:100%;object-fit:cover}
+.cimg .noph{font-size:38px;opacity:.2}
+.cedit{position:absolute;inset:0;background:rgba(232,25,26,.88);display:none;align-items:center;justify-content:center;flex-direction:column;gap:3px;color:white;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer}
+.cedit span{font-size:19px}
+.admin-mode .cimg:hover .cedit{display:flex}
+.cbody{padding:10px 11px 12px;flex:1;display:flex;flex-direction:column}
+.cname{font-family:'Playfair Display',serif;font-size:13px;font-weight:400;line-height:1.3;color:var(--tx);margin-bottom:3px;flex:1}
+.cdesc{font-size:11px;color:var(--tx3);line-height:1.35;margin-bottom:7px}
+.cbot{display:flex;align-items:center;justify-content:space-between}
+.cprice{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--red)}
+.cunit{font-size:10px;color:var(--tx3)}
+.bplus{width:27px;height:27px;border-radius:50%;background:var(--red);color:white;border:none;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;transition:background .15s}
+.bplus:hover{background:var(--rdk)}
+.cart{position:fixed;bottom:0;left:0;right:0;background:var(--blk);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;transform:translateY(100%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:200}
+.cart.vis{transform:translateY(0)}
+.ccnt{font-size:10px;color:rgba(255,255,255,.42);letter-spacing:1px;text-transform:uppercase}
+.ctot{font-family:'Playfair Display',serif;font-size:21px;color:white}
+.bwpp{background:var(--red);color:white;border:none;border-radius:10px;padding:11px 17px;font-family:'Lato',sans-serif;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.bwpp:hover{background:var(--rdk)}
+.ov{position:fixed;inset:0;background:rgba(26,10,10,.72);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.ov.open{display:flex}
+.modal{background:var(--wht);border-radius:20px 20px 0 0;width:100%;max-width:530px;max-height:92vh;overflow-y:auto;animation:up .27s cubic-bezier(.34,1.56,.64,1)}
+@keyframes up{from{transform:translateY(80px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mimg{width:100%;height:260px;background:var(--g1);display:flex;align-items:center;justify-content:center;border-radius:20px 20px 0 0;overflow:hidden;position:relative}
+.mimg img{width:100%;height:100%;object-fit:cover}
+.nophlg{font-size:58px;opacity:.18}
+.rbar{position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--red)}
+.mcls{position:absolute;top:11px;right:11px;width:31px;height:31px;border-radius:50%;background:rgba(26,10,10,.5);border:none;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mbdy{padding:18px 18px 6px}
+.mtag{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:4px}
+.mttl{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:4px}
+.mdsc{font-size:14px;color:var(--tx2);line-height:1.55;margin-bottom:7px}
+.mdet{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--g1);border-radius:10px;padding:11px;margin-bottom:10px}
+.mdlb{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:2px}
+.mdvl{font-size:12px;color:var(--tx2)}
+.mprc{font-family:'Playfair Display',serif;font-size:29px;font-weight:700;color:var(--red);margin:8px 0 3px}
+.munt{font-size:13px;color:var(--tx3)}
+.qrow{display:flex;align-items:center;gap:15px;margin:13px 0}
+.qbtn{width:35px;height:35px;border-radius:50%;border:2px solid var(--g2);background:white;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tx);transition:border-color .15s}
+.qbtn:hover{border-color:var(--red);color:var(--red)}
+.qnum{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;min-width:24px;text-align:center}
+.obsinp{width:100%;border:1.5px solid var(--g2);border-radius:10px;padding:10px 12px;font-family:'Lato',sans-serif;font-size:14px;color:var(--tx);background:white;resize:none;height:64px;outline:none;margin-bottom:11px}
+.obsinp:focus{border-color:var(--red)}
+.baddc{width:100%;background:var(--red);color:white;border:none;border-radius:12px;padding:14px;font-family:'Lato',sans-serif;font-size:16px;font-weight:700;cursor:pointer}
+.baddc:hover{background:var(--rdk)}
+.bcanc{width:100%;background:transparent;color:var(--tx3);border:none;padding:10px;font-family:'Lato',sans-serif;font-size:14px;cursor:pointer;margin-bottom:5px}
+.senhaov{position:fixed;inset:0;background:rgba(26,10,10,.88);z-index:700;display:none;align-items:center;justify-content:center;padding:20px}
+.senhaov.open{display:flex}
+.senhabox{background:white;border-radius:16px;padding:24px;width:100%;max-width:320px;text-align:center}
+.senhabox h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:6px}
+.senhabox p{font-size:13px;color:var(--tx3);margin-bottom:18px}
+.senhainp{width:100%;border:1.5px solid var(--g2);border-radius:10px;padding:12px;font-size:16px;text-align:center;letter-spacing:4px;outline:none;font-family:'Lato',sans-serif;margin-bottom:10px}
+.senhainp:focus{border-color:var(--red)}
+.senhainp.erro{border-color:var(--red);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.bsenha{width:100%;background:var(--red);color:white;border:none;border-radius:10px;padding:13px;font-family:'Lato',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px}
+.bcancelsenha{width:100%;background:transparent;color:var(--tx3);border:none;padding:9px;font-family:'Lato',sans-serif;font-size:14px;cursor:pointer}
+.senhahint{font-size:11px;color:var(--red);margin-top:4px;min-height:16px}
+.phov{position:fixed;inset:0;background:rgba(26,10,10,.9);z-index:600;display:none;align-items:center;justify-content:center;padding:18px}
+.phov.open{display:flex}
+.phbox{background:white;border-radius:16px;padding:20px;width:100%;max-width:370px}
+.phbox h3{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:5px}
+.phbox p{font-size:13px;color:var(--tx3);margin-bottom:13px}
+.phinp{width:100%;border:1.5px solid var(--g2);border-radius:10px;padding:9px 12px;font-size:14px;margin-bottom:9px;outline:none;font-family:'Lato',sans-serif}
+.phinp:focus{border-color:var(--red)}
+.phprev{width:100%;height:120px;background:var(--g1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:11px;overflow:hidden}
+.phprev img{width:100%;height:100%;object-fit:cover}
+.bsaveph{background:var(--red);color:white;border:none;border-radius:10px;padding:11px;width:100%;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:7px}
+.bsaveph:disabled{background:var(--tx3);cursor:not-allowed}
+.bcancelph{background:transparent;color:var(--tx3);border:none;padding:8px;width:100%;font-size:14px;cursor:pointer}
+.salvando{font-size:12px;color:var(--tx3);text-align:center;margin-top:4px}
+.foot{background:var(--blk);color:white;text-align:center;padding:24px 20px 100px}
+.fn{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:5px}
+.fi{font-size:12px;color:rgba(255,255,255,.42);line-height:1.9}
+.fr{color:var(--red)}
+</style>
+</head>
+<body>
+
+<button class="admin-badge" onclick="sairAdmin()">✓ Admin — Sair</button>
+
+<div class="hero">
+  <div class="logo" id="logo" onclick="logoClick()">
+    <svg viewBox="0 0 100 90" width="70" height="62" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 85C50 85 5 55 5 28C5 14 16 5 28 5C36 5 44 9 50 16C56 9 64 5 72 5C84 5 95 14 95 28C95 55 50 85 50 85Z" fill="#E8191A"/>
+      <text x="50" y="40" text-anchor="middle" font-family="Georgia,serif" font-size="12" font-style="italic" fill="black">Coração</text>
+      <text x="50" y="56" text-anchor="middle" font-family="Georgia,serif" font-size="12" font-style="italic" fill="black">de Mãe</text>
+    </svg>
+  </div>
+  <div class="hn">Coração de Mãe</div>
+  <div class="hs">Confeitaria &amp; Panificadora</div>
+  <div class="ht">O sabor da felicidade · Curitiba, PR</div>
+</div>
+
+<div class="nav"><div class="navrow" id="navrow"></div></div>
+<div id="content"></div>
+
+<div class="cart" id="cart">
+  <div><div class="ccnt" id="ccnt">0 ITENS</div><div class="ctot" id="ctot">R$ 0,00</div></div>
+  <button class="bwpp" onclick="enviar()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Pedir via WhatsApp
+  </button>
+</div>
+
+<div class="ov" id="ov" onclick="fechaProd(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div style="position:relative">
+      <div class="mimg" id="mimg"><span class="nophlg">🎂</span><div class="rbar"></div></div>
+      <button class="mcls" onclick="fechaProd()">✕</button>
+    </div>
+    <div class="mbdy">
+      <div class="mtag" id="mtag"></div>
+      <div class="mttl" id="mttl"></div>
+      <div class="mdsc" id="mdsc"></div>
+      <div class="mdet" id="mdet" style="display:none"></div>
+      <div class="mprc" id="mprc"></div>
+      <div class="munt" id="munt"></div>
+      <div class="qrow">
+        <button class="qbtn" onclick="chQ(-1)">−</button>
+        <div class="qnum" id="qnum">1</div>
+        <button class="qbtn" onclick="chQ(1)">+</button>
+      </div>
+      <textarea class="obsinp" id="obsinp" placeholder="Observação: tamanho, recheio, data de entrega..."></textarea>
+      <button class="baddc" onclick="addCart()">Adicionar ao pedido</button>
+      <button class="bcanc" onclick="fechaProd()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="senhaov" id="senhaov">
+  <div class="senhabox">
+    <h3>Área restrita</h3>
+    <p>Digite a senha para acessar o modo de edição</p>
+    <input class="senhainp" id="senhainp" type="password" placeholder="••••••" maxlength="20" onkeydown="if(event.key==='Enter')verificaSenha()">
+    <div class="senhahint" id="senhahint"></div>
+    <br>
+    <button class="bsenha" onclick="verificaSenha()">Entrar</button>
+    <button class="bcancelsenha" onclick="fechaSenha()">Cancelar</button>
+  </div>
+</div>
+
+<div class="phov" id="phov">
+  <div class="phbox">
+    <h3 id="phtitle"></h3>
+    <p id="phsub"></p>
+    <input class="phinp" id="phinp" placeholder="https://..." oninput="phPrev()">
+    <div class="phprev" id="phprev"><span style="font-size:28px;opacity:.28">📷</span></div>
+    <button class="bsaveph" id="bsaveph" onclick="salvaFoto()">Salvar</button>
+    <div class="salvando" id="salvando"></div>
+    <button class="bcancelph" onclick="fechaPh()">Cancelar</button>
+  </div>
+</div>
+
+<div class="foot">
+  <div class="fn">❤ Coração de Mãe</div>
+  <div class="fi">Confeitaria &amp; Panificadora · Curitiba, PR<br><span class="fr">Encomendas com 48h de antecedência</span><br>Delivery disponível em Curitiba e região</div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLrgMes-S3ITuprcvBeCziDJtZE7P2ExGztOHIcF3wgr2uEPCq5dusaEK8LYiJoA/exec';
+const WPP = '5541333273140';
+const SENHA = 'cdm2024';
+
+let fotos = {
+  'f_b11': 'https://drive.google.com/thumbnail?id=1Y3ntNfihvvOpJLTYMWxUqxuh8LIja4Yr&sz=w800',
+  'f_b9':  'https://drive.google.com/thumbnail?id=1lAB4iO6MdZ_m-xuZu2FZuVTWpDAo9R2N&sz=w800',
+  'f_b16': 'https://drive.google.com/thumbnail?id=1QmbZuygDU3mJTuQy7Hp876UpR14_Gdw0&sz=w800',
+  'f_b18': 'https://drive.google.com/thumbnail?id=1tI6SYZ_IevsV3o9w8civl7jPblW3maO2&sz=w800',
+  'f_b7':  'https://drive.google.com/thumbnail?id=1LybQFhVAmJcPQ6mZv8cRJZxS42zMEL3L&sz=w800',
+  'f_b8':  'https://drive.google.com/thumbnail?id=1gytjW83VNvk5qO0rVbP8m3eygJJDmN5o&sz=w800',
+  'f_b2':  'https://drive.google.com/thumbnail?id=1JwqEAolM_cs8I4haTdZFGrRtKIx3jC_c&sz=w800',
+  'f_b24': 'https://drive.google.com/thumbnail?id=1ATVBed2_YoWoXXurfjjL-wm4cDWXctVj&sz=w800',
+  'f_b28': 'https://drive.google.com/thumbnail?id=1U41LJM8znoaOsJMeLInm1gw7Y-K-WXdX&sz=w800',
+  'f_dt7': 'https://drive.google.com/thumbnail?id=1JGzDsgyRHJuorv9vwdSygmBO2gqmjOhO&sz=w800',
+  'f_b12': 'https://drive.google.com/thumbnail?id=1TFHji1L9zsKYJXuvy8A3zNmBtfzXqVwc&sz=w800',
+  'f_be1': 'https://drive.google.com/thumbnail?id=1uDmvh4BDTJS13cquXzPFRX3M_vGZFum6&sz=w800',
+  'f_b5':  'https://drive.google.com/thumbnail?id=1pQSPaqJCw-ZPXoBwHqmH1g0LHAurRQWR&sz=w800',
+  'f_b14': 'https://drive.google.com/thumbnail?id=1tYfKz3KT9t87iAKHrhfYyVds6CTmahPX&sz=w800',
+  'f_b13': 'https://drive.google.com/thumbnail?id=1vgOsjzkoEFwa_S_f5PAnXiifoT-oTHOT&sz=w800',
+  'f_b21': 'https://drive.google.com/thumbnail?id=1jeZPgOOgXRaPvJfEqfNCCpG__z-osenV&sz=w800',
+  'f_dt5': 'https://drive.google.com/thumbnail?id=1v4Hmr3XTt2Ai9r0bp-nPmPH6ara-hTgu&sz=w800',
+  'f_b4':  'https://drive.google.com/thumbnail?id=1y7T9gh2q9vYt2Y3Y-lf1OAKLuYBVR-JR&sz=w800',
+  'f_b3':  'https://drive.google.com/thumbnail?id=1H4O4U5qW-OCIfP9ofikPiPTGhtOR9p8X&sz=w800',
+};
+let admin = false;
+let catAtiva = 'bolos';
+let carrinho = [];
+let prodAtual = null;
+let qty = 1;
+let phTgt = null;
+let phTyp = null;
+let logoClicks = 0;
+let logoTimer = null;
+
+// ── Carrega fotos do Sheets ao abrir ──
+async function carregarFotos() {
+  try {
+    const r = await fetch(SCRIPT_URL + '?acao=listarFotos');
+    const j = await r.json();
+    if (j.fotos) { fotos = {...fotos, ...j.fotos}; renderContent(); }
+  } catch(e) { console.warn('Fotos offline', e); }
+}
+
+const gf = id => fotos['f_' + id] || '';
+const gc = k  => fotos['c_' + k]  || '';
+const fmt = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+// ── Admin: 5 cliques no logo + senha ──
+function logoClick() {
+  logoClicks++;
+  clearTimeout(logoTimer);
+  if (logoClicks >= 5) { logoClicks = 0; abrirSenha(); return; }
+  logoTimer = setTimeout(() => { logoClicks = 0; }, 1500);
+}
+
+function abrirSenha() {
+  document.getElementById('senhainp').value = '';
+  document.getElementById('senhahint').textContent = '';
+  document.getElementById('senhainp').classList.remove('erro');
+  document.getElementById('senhaov').classList.add('open');
+  setTimeout(() => document.getElementById('senhainp').focus(), 300);
+}
+
+function fechaSenha() { document.getElementById('senhaov').classList.remove('open'); }
+
+function verificaSenha() {
+  const inp = document.getElementById('senhainp');
+  if (inp.value === SENHA) {
+    fechaSenha(); admin = true;
+    document.body.classList.add('admin-mode');
+    renderContent();
+  } else {
+    inp.classList.remove('erro');
+    void inp.offsetWidth;
+    inp.classList.add('erro');
+    document.getElementById('senhahint').textContent = 'Senha incorreta.';
+    inp.value = '';
+    setTimeout(() => inp.focus(), 100);
+  }
+}
+
+function sairAdmin() {
+  admin = false;
+  document.body.classList.remove('admin-mode');
+  renderContent();
+}
+
+// ── Catálogo ──
+const CATS = [
+  {key:'bolos',label:'Bolos',icon:'🎂',sub:'por kg',grupos:[
+    {t:'BOLOS TRADICIONAIS — 1 KG',itens:[
+      {id:'b1',n:'Ouro Branco',p:82,desc:'Massa branca',det:{Recheio:'Brigadeiro branco, ouro branco e nata',Cobertura:'Chantilly ou nata e raspas de chocolate branco'}},
+      {id:'b2',n:'Ouro Branco com Morango',p:77,desc:'Massa branca e preta',det:{Recheio:'Brigadeiro branco, morango, ouro branco e nata',Cobertura:'Ganache branco e morango'}},
+      {id:'b3',n:'Sonho de Valsa',p:77,desc:'Massa preta',det:{Recheio:'Brigadeiro branco, sonho de valsa e nata',Cobertura:'Ganache preto e sonho de valsa'}},
+      {id:'b4',n:'Sonho de Valsa com Morango',p:77,desc:'Massa preta',det:{Recheio:'Brigadeiro branco, sonho de valsa, morango e nata',Cobertura:'Chantilly ou nata e morango'}},
+      {id:'b5',n:'Martha Rocha com Ameixa',p:90,desc:'Massa branca e preta',det:{Recheio:'Creme de ovo, nata, suspiro crocante e ameixa',Cobertura:'Chantilly ou nata, fios de ovo e ameixa'}},
+      {id:'b6',n:'Martha Rocha com Damasco',p:120,desc:'Massa preta',det:{Recheio:'Creme trufado',Cobertura:'Chantilly de chocolate'}},
+      {id:'b7',n:'Fantástico',p:77,desc:'Massa branca',det:{Recheio:'Doce de leite, abacaxi e nata',Cobertura:'Chantilly ou nata, abacaxi e doce de leite'}},
+      {id:'b8',n:'Floresta Negra',p:90,desc:'Massa preta',det:{Recheio:'Ganache, cereja e nata',Cobertura:'Ganache de chocolate preto meio amargo'}},
+      {id:'b9',n:'4 Leites com Morango',p:85,desc:'Massa branca',det:{Recheio:'Leite bem pó, creme de leite, leite condensado, leite de coco e morango',Cobertura:'Chantininho'}},
+      {id:'b10',n:'Coração de Mãe',p:80,desc:'Massa branca e preta',det:{Recheio:'Ganache, cereja, mousse de morango, suspiro e morango',Cobertura:'Chantilly, geleia de morango, mousse preto, morango e cereja'}},
+      {id:'b11',n:'Dois Amores',p:77,desc:'Massa branca e preta',det:{Recheio:'Brigadeiro branco e brigadeiro preto',Cobertura:'Chantilly ou nata, mousse branco e preto'}},
+      {id:'b12',n:'Dois Amores com Morango',p:77,desc:'Massa branca e preta',det:{Recheio:'Brigadeiro branco e preto, morango e coco',Cobertura:'Chantilly ou nata, mousse branco e preto e morango'}},
+      {id:'b13',n:'Napolitano',p:77,desc:'Massa preta',det:{Recheio:'Brigadeiro preto, nata e morango',Cobertura:'Chantilly e morango'}},
+      {id:'b14',n:'Morango com Suspiro',p:77,desc:'Massa branca',det:{Recheio:'Brigadeiro branco, morango, suspiro e nata',Cobertura:'Chantilly ou nata, morango e suspiro'}},
+      {id:'b15',n:'Morango',p:77,desc:'Massa branca',det:{Recheio:'Brigadeiro branco e morango',Cobertura:'Chantilly ou nata e morango'}},
+      {id:'b16',n:'4 Leites',p:75,desc:'Massa branca',det:{Recheio:'Leite bem pó, creme de leite, leite condensado e leite de coco',Cobertura:'Chantininho'}},
+      {id:'b17',n:'Frutas',p:77,desc:'Massa branca',det:{Recheio:'Brigadeiro branco, abacaxi, pêssego e nata',Cobertura:'Chantilly ou nata, frutas e geleia de pêssego'}},
+      {id:'b18',n:'Abacaxi com Cocada',p:75,desc:'Massa branca e preta',det:{Recheio:'Brigadeiro branco, abacaxi, coco e nata',Cobertura:'Chantilly ou nata, abacaxi e coco'}},
+      {id:'b19',n:'Ayrton Senna',p:80,desc:'Massa branca e preta',det:{Recheio:'Mousse preto, brigadeiro branco, chantilly de chocolate e morango',Cobertura:'Chantilly preto, mousse preto e morango'}},
+      {id:'b20',n:'Abacaxi',p:70,desc:''},{id:'b21',n:'Prestígio Preto',p:77,desc:''},{id:'b22',n:'Prestígio Branco',p:77,desc:''},
+      {id:'b23',n:'Tropical',p:75,desc:''},{id:'b24',n:'Sensação',p:82,desc:''},{id:'b25',n:'Ninho com Abacaxi',p:80,desc:''},
+      {id:'b26',n:'Xuxa Cereja',p:82,desc:''},{id:'b27',n:'Xuxa Uva',p:82,desc:''},{id:'b28',n:'Xuxa Morango',p:82,desc:''},
+    ]},
+    {t:'BOLOS ESPECIAIS — 1 KG',itens:[
+      {id:'be1',n:'Strogonoff de Nozes',p:90,desc:'Massa branca e preta',det:{Recheio:'Creme de nozes',Cobertura:'Chantilly, caramelo, cereja e nozes'}},
+      {id:'be2',n:'Ferrero Rocher',p:120,desc:'Massa preta',det:{Recheio:'Brigadeiro, creme de avelã, avelã moído, chocolate, leite e chantilly',Cobertura:'Mousse preto e avelã'}},
+    ]},
+    {t:'BOLOS GOURMET — UNIDADE 2 KG',itens:[
+      {id:'bg1',n:'4 Leite e Morango',p:259.90,desc:'Massa branca',det:{Recheio:'Creme 4 leite e morango',Cobertura:'Ganache chocolate branco e brigadeiros de leite ninho e morango'}},
+      {id:'bg2',n:'Trufado de Chocolate com Maracujá',p:259.90,desc:'Nega Maluca',det:{Recheio:'Trufado de maracujá e de chocolate',Cobertura:'Trufado e brigadeiros de maracujá'}},
+      {id:'bg3',n:'Nega Maluca com 4 Leite',p:259.90,desc:'Nega Maluca',det:{Recheio:'Creme 4 leite',Cobertura:'Ganache chocolate branco, com brigadeiro ninho e brigadeiro gourmet'}},
+      {id:'bg4',n:'4 Leites com Nutella',p:269.90,desc:'Massa branca',det:{Recheio:'Leite bem pó, creme de leite, leite condensado, leite de coco e nutella',Cobertura:'Chantininho'}},
+      {id:'bg5',n:'4 Leites com Nutella e Morango',p:306.40,desc:'Massa branca',det:{Recheio:'Creme 4 leites, nutella e morango',Cobertura:'Chantininho'}},
+      {id:'bg6',n:'Nega Maluca com Ninho e Morango',p:259.90,desc:'Nega Maluca',det:{Recheio:'Brigadeiro de ninho e morango',Cobertura:'Chocolate ao leite'}},
+      {id:'bg7',n:'Red Velvet',p:259.90,desc:'Massa amanteigada vermelha',det:{Recheio:'4 leites',Cobertura:'Morango e cereja'}},
+      {id:'bg8',n:'Brigadeiro Trufado de Chocolate',p:224.90,desc:'Nega Maluca',det:{Recheio:'Brigadeiro trufado de chocolate',Cobertura:'Ganache chocolate preto e brigadeiros gourmet'}},
+      {id:'bg9',n:'Trufado de Paçoca com Chocolate',p:224.90,desc:'Nega Maluca',det:{Recheio:'Brigadeiro branco trufado de paçoca',Cobertura:'Ganache chocolate preto com brigadeiro de paçoca'}},
+    ]},
+  ]},
+  {key:'tortas',label:'Tortas Doces',icon:'🥧',sub:'1 kg',grupos:[{t:'TORTAS DOCES — 1 KG',itens:[
+    {id:'td1',n:'Torta de Limão',p:52.90},{id:'td2',n:'Torta de Maracujá',p:56.90},
+    {id:'td3',n:'Torta Alemã',p:79.90},{id:'td4',n:'Torta Holandesa',p:133.90},
+    {id:'td5',n:'Torta Banoffee',p:69.90},{id:'td6',n:'Torta Morangoffe',p:82.90},
+    {id:'td7',n:'Torta de Requeijão',p:82.90},{id:'td8',n:'Torta Requeijão com Goiabada',p:82.90},
+    {id:'td9',n:'Cheesecake de Frutas Vermelhas',p:126.90},{id:'td10',n:'Cheesecake de Morango',p:122.90},
+  ]}]},
+  {key:'simples',label:'Bolos Simples',icon:'🍰',sub:'1 kg',grupos:[{t:'BOLOS SIMPLES — 1 KG',itens:[
+    {id:'bs1',n:'Cenoura',p:43},{id:'bs2',n:'Cuque de Farofa',p:43},{id:'bs3',n:'Cuque com Banana',p:43},
+    {id:'bs4',n:'Nega Maluca',p:43},{id:'bs5',n:'Nega Maluca Recheada',p:55},{id:'bs6',n:'Formigueiro',p:43},
+    {id:'bs7',n:'Fubá',p:43},{id:'bs8',n:'Fubá com Goiabada',p:43},{id:'bs9',n:'Toalha Felpuda',p:43},
+    {id:'bs10',n:'Toalha Felpuda Recheada',p:55},{id:'bs11',n:'Laranja',p:43},{id:'bs12',n:'Mármore',p:43},
+  ]}]},
+  {key:'doces',label:'Doces',icon:'🍬',sub:'por cento',grupos:[
+    {t:'DOCES ESPECIAIS — CENTO',itens:[
+      {id:'de1',n:'Bombom de Nozes',p:380,u:'cento'},{id:'de2',n:'Camafeu',p:280,u:'cento'},
+      {id:'de3',n:'Espelhados Uva/Morango',p:380,u:'cento'},{id:'de4',n:'Espelhados Nozes/Damasco/Cereja',p:400,u:'cento'},
+      {id:'de5',n:'Glacados Morango/Uva',p:380,u:'cento'},{id:'de6',n:'Glacados Damasco/Cereja',p:380,u:'cento'},
+      {id:'de7',n:'Mousse Tacinha Limão/Maracujá/Brigadeiro',p:350,u:'cento'},
+      {id:'de8',n:'Mini Tortinhas Maracujá',p:200,u:'cento'},{id:'de9',n:'Mini Tortinhas Kiwi',p:200,u:'cento'},
+      {id:'de10',n:'Folhados Romeu e Julieta',p:150,u:'cento'},{id:'de11',n:'Bombon Abacaxi/Cereja',p:380,u:'cento'},
+      {id:'de12',n:'Bombon Uva/Morango',p:380,u:'cento'},{id:'de13',n:'Leite Ninho e Nutella',p:260,u:'cento'},
+      {id:'de14',n:'Surpresa de Uva/Morango',p:240,u:'cento'},{id:'de15',n:'Bicho de Pé',p:200,u:'cento'},
+      {id:'de16',n:'Folhado de Banana/Maçã',p:150,u:'cento'},{id:'de17',n:'Carolina Creme',p:200,u:'cento'},
+      {id:'de18',n:'Carolina Chocolate Branco/Preto',p:200,u:'cento'},{id:'de19',n:'Carolina Doce de Leite',p:200,u:'cento'},
+      {id:'de20',n:'Mini Croissant de Chocolate',p:150,u:'cento'},{id:'de21',n:'Mini Tortinhas de Limão',p:180,u:'cento'},
+      {id:'de22',n:'Mini Tortinhas de Morango',p:180,u:'cento'},{id:'de23',n:'Mini Tortinhas de Nozes',p:190,u:'cento'},
+      {id:'de24',n:'Mini Tortinhas de Chocolate',p:180,u:'cento'},{id:'de25',n:'Conchinhas de Morango',p:300,u:'cento'},
+      {id:'de26',n:'Ouriço',p:250,u:'cento'},
+    ]},
+    {t:'DOCES TRADICIONAIS — CENTO',itens:[
+      {id:'dt1',n:'Brigadeiro Preto',p:150,u:'cento'},{id:'dt2',n:'Brigadeiro Branco',p:150,u:'cento'},
+      {id:'dt3',n:'Beijinho',p:150,u:'cento'},{id:'dt4',n:'Dois Amores',p:190,u:'cento'},
+      {id:'dt5',n:'Quindim',p:160,u:'cento'},{id:'dt6',n:'Abacaxi',p:150,u:'cento'},
+      {id:'dt7',n:'Cajuzinho',p:150,u:'cento'},{id:'dt8',n:'Olho de Sogra',p:190,u:'cento'},
+      {id:'dt9',n:'Leite Ninho',p:180,u:'cento'},
+    ]},
+  ]},
+  {key:'salgados',label:'Salgados',icon:'🥐',sub:'por cento',grupos:[
+    {t:'SALGADOS FRITOS — CENTO',itens:[
+      {id:'sf1',n:'Bolinha de Queijo',p:104,u:'cento'},{id:'sf2',n:'Coxinha',p:104,u:'cento'},
+      {id:'sf3',n:'Croquete de Frango',p:104,u:'cento'},{id:'sf4',n:'Kibe',p:104,u:'cento'},
+      {id:'sf5',n:'Pastel de Vento (Carne ou Queijo)',p:104,u:'cento'},
+      {id:'sf6',n:'Risoles (Carne ou Frios)',p:104,u:'cento'},{id:'sf7',n:'Risoles de Palmito',p:104,u:'cento'},
+    ]},
+    {t:'MINI PIZZAS — CENTO',itens:[
+      {id:'sm1',n:'Mini Pizza Tomate Seco',p:130,u:'cento'},{id:'sm2',n:'Mini Pizza Frios',p:130,u:'cento'},
+      {id:'sm3',n:'Mini Pizza Frango com Catupiry',p:130,u:'cento'},
+    ]},
+    {t:'SALGADOS ESPECIAIS — CENTO',itens:[
+      {id:'se1',n:'Canapés Frango/Atum',p:130,u:'cento'},{id:'se2',n:'Mini Sanduíche de Frios',p:380,u:'cento'},
+      {id:'se3',n:'Mini Sanduíche de Frango',p:380,u:'cento'},{id:'se4',n:'Mini Sanduíche de Peito de Peru',p:400,u:'cento'},
+      {id:'se5',n:'Barquete / Salpicão / Tropical',p:250,u:'cento'},{id:'se6',n:'Folhado de Camarão',p:250,u:'cento'},
+      {id:'se7',n:'Carolina de Frango',p:190,u:'cento'},{id:'se8',n:'Carolina de Ricota',p:200,u:'cento'},
+      {id:'se9',n:'Carolina de Atum',p:230,u:'cento'},{id:'se10',n:'Quiche de Champignon',p:150,u:'cento'},
+      {id:'se11',n:'Quiche de Queijo e Presunto',p:150,u:'cento'},{id:'se12',n:'Quiche de Espinafre',p:150,u:'cento'},
+      {id:'se13',n:'Quiche de Queijo',p:150,u:'cento'},{id:'se14',n:'Quiche de Alho Poró',p:150,u:'cento'},
+      {id:'se15',n:'Quiche de Bacon',p:160,u:'cento'},
+    ]},
+  ]},
+  {key:'tortas-salgadas',label:'Tortas Salgadas',icon:'🥘',sub:'por kg',grupos:[{t:'TORTAS SALGADAS — KG',itens:[
+    {id:'ts1',n:'Torta Quiche Sabores',p:69.90,u:'kg'},{id:'ts2',n:'Empadão de Camarão',p:100,u:'kg'},
+    {id:'ts3',n:'Empadão de Frango',p:60,u:'kg'},{id:'ts4',n:'Empadão de Frango c/ Catupiry',p:65.50,u:'kg'},
+    {id:'ts5',n:'Empadão de Palmito',p:65.50,u:'kg'},{id:'ts6',n:'Empadão Misto',p:59.90,u:'kg'},
+    {id:'ts7',n:'Torta de Legumes c/ Nata',p:60,u:'kg'},{id:'ts8',n:'Torta de Frango c/ Nata',p:60,u:'kg'},
+    {id:'ts9',n:'Torta Mista c/ Nata',p:65,u:'kg'},{id:'ts10',n:'Torta de Palmito c/ Nata',p:60,u:'kg'},
+    {id:'ts11',n:'Torta de Legumes',p:51,u:'kg'},
+  ]}]},
+  {key:'baguetes',label:'Baguetes',icon:'🥖',sub:'por unidade',grupos:[{t:'BAGUETES — UNIDADE',itens:[
+    {id:'bag1',n:'Peru',p:80,u:'unidade'},{id:'bag2',n:'Lombinho',p:80,u:'unidade'},
+    {id:'bag3',n:'Frios',p:80,u:'unidade'},{id:'bag4',n:'Frango',p:80,u:'unidade'},{id:'bag5',n:'Atum',p:80,u:'unidade'},
+  ]}]},
+];
+
+function renderNav() {
+  document.getElementById('navrow').innerHTML = CATS.map(c =>
+    `<button class="nb ${catAtiva===c.key?'on':''}" onclick="setCat('${c.key}')">${c.icon} ${c.label}</button>`
+  ).join('');
+}
+
+function setCat(k) { catAtiva=k; renderNav(); renderContent(); document.querySelector('.nav').scrollIntoView({behavior:'smooth',block:'start'}); }
+
+function covHdr(cat) {
+  const cov = gc(cat.key);
+  return `<div class="covhdr">
+    <div class="covbg">${cov?`<img src="${cov}" alt="${cat.label}" onerror="this.style.display='none'">`:`<span class="noc">${cat.icon}</span>`}</div>
+    <div class="covol"></div>
+    <div class="covinfo">
+      <div><div class="covtitle">${cat.label}</div><div class="covsub">${cat.sub||''}</div></div>
+      <button class="btncov" onclick="abrirPh('cover','${cat.key}','Foto de capa — ${cat.label}','Cole a URL da imagem de capa')">📷 Capa</button>
+    </div>
+  </div>`;
+}
+
+function cardH(p, icon) {
+  const foto = gf(p.id);
+  return `<div class="card" onclick="abrirProd('${p.id}')">
+    <div class="cimg">
+      ${foto?`<img src="${foto}" alt="${p.n}" onerror="this.style.display='none'">`:`<span class="noph">${icon}</span>`}
+      <div class="cedit" onclick="event.stopPropagation();abrirPh('prod','${p.id}','Foto — ${p.n.replace(/'/g,"\\'")}','Cole a URL da imagem')"><span>📷</span>Foto</div>
+    </div>
+    <div class="cbody">
+      <div class="cname">${p.n}</div>
+      ${p.desc?`<div class="cdesc">${p.desc}</div>`:''}
+      <div class="cbot">
+        <div><div class="cprice">${fmt(p.p)}</div>${p.u?`<div class="cunit">por ${p.u}</div>`:''}</div>
+        <button class="bplus" onclick="event.stopPropagation();addD('${p.id}')">+</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderContent() {
+  const cat = CATS.find(c => c.key === catAtiva); if (!cat) return;
+  let html = `<div class="sec">${covHdr(cat)}`;
+  cat.grupos.forEach(g => {
+    html += `<div class="subseclabel">${g.t}</div><div class="grid">`;
+    g.itens.forEach(p => { html += cardH(p, cat.icon); });
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('content').innerHTML = html;
+}
+
+function getP(id) {
+  for (const cat of CATS) for (const g of cat.grupos) { const p = g.itens.find(x=>x.id===id); if(p) return {p,cat}; }
+  return null;
+}
+
+function abrirProd(id) {
+  const res = getP(id); if (!res) return;
+  const {p, cat} = res;
+  prodAtual = id; qty = 1;
+  document.getElementById('qnum').textContent = 1;
+  document.getElementById('obsinp').value = '';
+  document.getElementById('mtag').textContent = cat.label + (cat.sub?' · '+cat.sub:'');
+  document.getElementById('mttl').textContent = p.n;
+  document.getElementById('mdsc').textContent = p.desc || '';
+  document.getElementById('mprc').textContent = fmt(p.p);
+  document.getElementById('munt').textContent = p.u ? 'por '+p.u : '';
+  const det = document.getElementById('mdet');
+  if (p.det && Object.keys(p.det).length) {
+    det.style.display = 'grid';
+    det.innerHTML = Object.entries(p.det).map(([k,v])=>`<div><div class="mdlb">${k}</div><div class="mdvl">${v}</div></div>`).join('');
+  } else det.style.display = 'none';
+  const foto = gf(id);
+  document.getElementById('mimg').innerHTML = foto
+    ? `<img src="${foto}" style="width:100%;height:100%;object-fit:cover"><div class="rbar"></div>`
+    : `<span class="nophlg">${cat.icon}</span><div class="rbar"></div>`;
+  document.getElementById('ov').classList.add('open');
+}
+
+function fechaProd(e) { if (!e || e.target===document.getElementById('ov')) document.getElementById('ov').classList.remove('open'); }
+function chQ(d) { qty = Math.max(1, qty+d); document.getElementById('qnum').textContent = qty; }
+
+function addCart() {
+  if (!prodAtual) return;
+  const res = getP(prodAtual); if (!res) return;
+  const {p} = res;
+  const obs = document.getElementById('obsinp').value.trim();
+  const ex = carrinho.find(i => i.id===p.id && i.obs===obs);
+  if (ex) ex.qty += qty; else carrinho.push({id:p.id,n:p.n,p:p.p,u:p.u||'',qty,obs});
+  document.getElementById('ov').classList.remove('open');
+  updCart();
+}
+
+function addD(id) {
+  const res = getP(id); if (!res) return;
+  const {p} = res;
+  const ex = carrinho.find(i => i.id===id && !i.obs);
+  if (ex) ex.qty++; else carrinho.push({id,n:p.n,p:p.p,u:p.u||'',qty:1,obs:''});
+  updCart();
+}
+
+function updCart() {
+  const tot = carrinho.reduce((s,i) => s+i.p*i.qty, 0);
+  const cnt = carrinho.reduce((s,i) => s+i.qty, 0);
+  document.getElementById('ccnt').textContent = cnt + (cnt===1?' ITEM':' ITENS');
+  document.getElementById('ctot').textContent = fmt(tot);
+  document.getElementById('cart').classList.toggle('vis', carrinho.length > 0);
+}
+
+function enviar() {
+  if (!carrinho.length) return;
+  let msg = '🍰 *Olá! Gostaria de fazer um pedido no Coração de Mãe:*\n\n';
+  carrinho.forEach(i => {
+    msg += `• *${i.n}* x${i.qty} — ${fmt(i.p*i.qty)}`;
+    if (i.u) msg += ` (${i.u})`;
+    if (i.obs) msg += `\n  _Obs: ${i.obs}_`;
+    msg += '\n';
+  });
+  const tot = carrinho.reduce((s,i) => s+i.p*i.qty, 0);
+  msg += `\n*Total estimado: ${fmt(tot)}*\n\nAguardo confirmação! 😊`;
+  window.open(`https://wa.me/${WPP}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// ── Fotos via Sheets ──
+function abrirPh(type, id, title, sub) {
+  phTyp = type; phTgt = id;
+  document.getElementById('phtitle').textContent = title;
+  document.getElementById('phsub').textContent = sub;
+  const cur = type === 'cover' ? gc(id) : gf(id);
+  document.getElementById('phinp').value = cur || '';
+  document.getElementById('salvando').textContent = '';
+  document.getElementById('bsaveph').disabled = false;
+  phPrev();
+  document.getElementById('phov').classList.add('open');
+}
+
+function fechaPh() { document.getElementById('phov').classList.remove('open'); }
+
+function phPrev() {
+  const u = document.getElementById('phinp').value.trim();
+  document.getElementById('phprev').innerHTML = u
+    ? `<img src="${u}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<span style=font-size:26px;opacity:.3>❌</span>'">`
+    : `<span style="font-size:26px;opacity:.28">📷</span>`;
+}
+
+async function salvaFoto() {
+  const url = document.getElementById('phinp').value.trim();
+  const key = phTyp === 'cover' ? 'c_' + phTgt : 'f_' + phTgt;
+  const btn = document.getElementById('bsaveph');
+  const msg = document.getElementById('salvando');
+
+  btn.disabled = true;
+  msg.textContent = '⏳ Salvando no Google Sheets...';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ acao: url ? 'salvarFoto' : 'apagarFoto', id: key, url })
+    });
+    if (url) fotos[key] = url; else delete fotos[key];
+    msg.textContent = '✓ Salvo! Aparece pra todos agora.';
+    setTimeout(() => { fechaPh(); renderContent(); }, 1200);
+  } catch(e) {
+    msg.textContent = '❌ Erro ao salvar. Tente novamente.';
+    btn.disabled = false;
+  }
+}
+
+// ── Init ──
+renderNav();
+renderContent();
+carregarFotos();
+</script>
+</body>
+</html>
