@@ -255,11 +255,19 @@ const SENHA = 'cdm2024';
 
 // ── Leitura de UTM para rastreamento de origem ──
 const UTM_KEYWORD_MAP = {
-  'google_maps':   'google maps',
-  'instagram':     'instagram',
-  'facebook':      'facebook',
-  'meta':          'anuncio',
-  'google':        'google ads',
+  'google_maps': 'google maps',
+  'instagram':   'instagram',
+  'facebook':    'facebook',
+  'meta':        'anuncio',
+  'google':      'google ads',
+};
+
+const UTM_MSG_MAP = {
+  'google_maps': 'Olá, vim pelo Google Maps e gostaria de fazer um orçamento',
+  'instagram':   'Olá, vim pelo Instagram e gostaria de fazer um orçamento',
+  'facebook':    'Olá, vim pelo Facebook e gostaria de fazer um orçamento',
+  'meta':        'Olá, vi o anúncio e gostaria de fazer um orçamento',
+  'google':      'Olá, vim pelo google ads e gostaria de fazer um orçamento',
 };
 
 function getUtmKeyword() {
@@ -268,11 +276,16 @@ function getUtmKeyword() {
   return UTM_KEYWORD_MAP[source.toLowerCase()] || 'cardapio';
 }
 
+function getUtmMsg() {
+  const params = new URLSearchParams(window.location.search);
+  const source = params.get('utm_source') || '';
+  return UTM_MSG_MAP[source.toLowerCase()] || 'Olá, gostaria de fazer um orçamento';
+}
+
 function buildWppUrl(msgExtra) {
   const keyword = getUtmKeyword();
-  const texto = msgExtra
-    ? `${keyword} ${msgExtra}`
-    : `${keyword} Olá! Gostaria de fazer um pedido`;
+  const msgBase = getUtmMsg();
+  const texto = msgExtra ? `${keyword} ${msgExtra}` : `${keyword} ${msgBase}`;
   return `https://wa.me/${WPP}?text=${encodeURIComponent(texto)}`;
 }
 
