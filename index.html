@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cardápio — Coração de Mãe</title>
+<!-- GTM dataLayer init -->
+<script>window.dataLayer = window.dataLayer || [];</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-56P6VVB3');</script>
+<!-- End Google Tag Manager -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -17,11 +26,11 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 .ht{font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px;font-style:italic;position:relative;z-index:1}
 .admin-badge{position:fixed;top:10px;right:10px;z-index:500;background:var(--red);color:white;border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;letter-spacing:1px;display:none;cursor:pointer}
 .admin-mode .admin-badge{display:block}
-.nav{background:#fff;position:sticky;top:0;z-index:100;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 8px rgba(0,0,0,0.10)}
+.nav{background:var(--blk);position:sticky;top:0;z-index:100;overflow-x:auto;scrollbar-width:none}
 .nav::-webkit-scrollbar{display:none}
 .navrow{display:flex;min-width:max-content}
-.nb{background:transparent;color:rgba(26,10,10,0.45);border:none;padding:13px 15px;font-family:'Lato',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .18s}
-.nb:hover{color:var(--red)}
+.nb{background:transparent;color:rgba(255,255,255,0.48);border:none;padding:13px 15px;font-family:'Lato',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .18s}
+.nb:hover{color:rgba(255,255,255,0.78)}
 .nb.on{color:var(--red);border-bottom-color:var(--red)}
 .sec{padding-bottom:80px}
 .covhdr{position:relative;height:150px;overflow:hidden;display:flex;align-items:flex-end}
@@ -60,10 +69,9 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 .bwpp:hover{background:var(--rdk)}
 .ov{position:fixed;inset:0;background:rgba(26,10,10,.72);z-index:300;display:none;align-items:flex-end;justify-content:center}
 .ov.open{display:flex}
-.modal{background:var(--wht);border-radius:20px 20px 0 0;width:100%;max-width:530px;max-height:92vh;overflow-y:auto;animation:up .27s cubic-bezier(.34,1.56,.64,1);display:flex;flex-direction:column}
+.modal{background:var(--wht);border-radius:20px 20px 0 0;width:100%;max-width:530px;max-height:92vh;overflow-y:auto;animation:up .27s cubic-bezier(.34,1.56,.64,1)}
 @keyframes up{from{transform:translateY(80px);opacity:0}to{transform:translateY(0);opacity:1}}
-.mimg{width:100%;height:55vw;max-height:320px;min-height:220px;background:var(--g1);display:flex;align-items:center;justify-content:center;border-radius:20px 20px 0 0;overflow:hidden;position:relative;flex-shrink:0}
-.mimg img{object-position:center top!important}
+.mimg{width:100%;height:260px;background:var(--g1);display:flex;align-items:center;justify-content:center;border-radius:20px 20px 0 0;overflow:hidden;position:relative}
 .mimg img{width:100%;height:100%;object-fit:cover}
 .nophlg{font-size:58px;opacity:.18}
 .rbar{position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--red)}
@@ -118,6 +126,10 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-56P6VVB3"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <button class="admin-badge" onclick="sairAdmin()">✓ Admin — Sair</button>
 
@@ -524,6 +536,16 @@ function enviar() {
   });
   const tot = carrinho.reduce((s,i) => s+i.p*i.qty, 0);
   msg += `\n*Total estimado: ${fmt(tot)}*\n\nAguardo confirmação! 😊`;
+
+  // ── Rastreamento: dispara evento pro GTM antes de abrir o WhatsApp ──
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: 'clique_whatsapp',
+    valor_carrinho: parseFloat(tot.toFixed(2)),
+    qtd_itens: carrinho.reduce((s,i) => s+i.qty, 0),
+    currency: 'BRL'
+  });
+
   window.open(`https://wa.me/${WPP}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
