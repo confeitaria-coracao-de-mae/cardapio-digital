@@ -123,32 +123,9 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 .fn{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:5px}
 .fi{font-size:12px;color:rgba(255,255,255,.42);line-height:1.9}
 .fr{color:var(--red)}
-
-/* ── Botão flutuante WhatsApp ── */
-.wpp-float{
-  position:fixed;
-  bottom:80px;
-  right:18px;
-  z-index:299;
-  width:54px;
-  height:54px;
-  background:#25D366;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 4px 16px rgba(37,211,102,0.45);
-  cursor:pointer;
-  text-decoration:none;
-  transition:transform .2s, box-shadow .2s;
-  animation: pulse-wpp 2.5s infinite;
-}
+.wpp-float{position:fixed;bottom:80px;right:18px;z-index:299;width:54px;height:54px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,0.45);cursor:pointer;text-decoration:none;transition:transform .2s, box-shadow .2s;animation:pulse-wpp 2.5s infinite}
 .wpp-float:hover{transform:scale(1.08);box-shadow:0 6px 22px rgba(37,211,102,0.55)}
-@keyframes pulse-wpp{
-  0%,100%{box-shadow:0 4px 16px rgba(37,211,102,0.45)}
-  50%{box-shadow:0 4px 28px rgba(37,211,102,0.75)}
-}
-/* Esconde quando o carrinho estiver visível pra não sobrepor */
+@keyframes pulse-wpp{0%,100%{box-shadow:0 4px 16px rgba(37,211,102,0.45)}50%{box-shadow:0 4px 28px rgba(37,211,102,0.75)}}
 .cart.vis ~ .wpp-float{bottom:90px}
 </style>
 </head>
@@ -233,11 +210,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </div>
 
-<!-- Botão flutuante WhatsApp -->
-<a class="wpp-float" id="wpp-float-btn"
-   href="#"
-   onclick="abrirWppFlutuante(event)"
-   aria-label="Falar no WhatsApp">
+<a class="wpp-float" id="wpp-float-btn" href="#" onclick="abrirWppFlutuante(event)" aria-label="Falar no WhatsApp">
   <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
   </svg>
@@ -253,7 +226,6 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLrgMes-S3ITuprcvBe
 const WPP = '554133273140';
 const SENHA = 'cdm2024';
 
-// ── Leitura de UTM para rastreamento de origem ──
 const UTM_KEYWORD_MAP = {
   'google_maps': 'google maps',
   'instagram':   'instagram',
@@ -306,7 +278,7 @@ let fotos = {
   'f_b14': 'https://drive.google.com/thumbnail?id=1tYfKz3KT9t87iAKHrhfYyVds6CTmahPX&sz=w800',
   'f_b13': 'https://drive.google.com/thumbnail?id=1vgOsjzkoEFwa_S_f5PAnXiifoT-oTHOT&sz=w800',
   'f_b21': 'https://drive.google.com/thumbnail?id=1jeZPgOOgXRaPvJfEqfNCCpG__z-osenV&sz=w800',
-  'f_dt5': 'https://drive.google.com/thumbnail?id=1v4Hmr3XTt2Ai9r0bp-nPmPH6ara-hTgu&sz=w800',
+  'f_dt5': 'https://drive.google.com/thumbnail?id=1v4Hmr3XTt2Ai9r0pb-nPmPH6ara-hTgu&sz=w800',
   'f_b4':  'https://drive.google.com/thumbnail?id=1y7T9gh2q9vYt2Y3Y-lf1OAKLuYBVR-JR&sz=w800',
   'f_b3':  'https://drive.google.com/thumbnail?id=1H4O4U5qW-OCIfP9ofikPiPTGhtOR9p8X&sz=w800',
 };
@@ -320,13 +292,34 @@ let phTyp = null;
 let logoClicks = 0;
 let logoTimer = null;
 
-// ── Carrega fotos do Sheets ao abrir ──
+// ── Carrega fotos E preços do Sheets ao abrir ──
 async function carregarFotos() {
   try {
-    const r = await fetch(SCRIPT_URL + '?acao=listarFotos');
-    const j = await r.json();
-    if (j.fotos) { fotos = {...fotos, ...j.fotos}; renderContent(); }
-  } catch(e) { console.warn('Fotos offline', e); }
+    const [rFotos, rPrecos] = await Promise.all([
+      fetch(SCRIPT_URL + '?acao=listarFotos'),
+      fetch(SCRIPT_URL + '?acao=listarPrecos')
+    ]);
+    const jFotos  = await rFotos.json();
+    const jPrecos = await rPrecos.json();
+
+    if (jFotos.fotos)   fotos = {...fotos, ...jFotos.fotos};
+    if (jPrecos.precos) aplicarPrecos(jPrecos.precos);
+
+    renderContent();
+  } catch(e) { console.warn('Offline', e); }
+}
+
+// ── Aplica preços da planilha sobre o catálogo ──
+function aplicarPrecos(precos) {
+  CATS.forEach(cat => {
+    cat.grupos.forEach(grupo => {
+      grupo.itens.forEach(item => {
+        if (precos[item.id] !== undefined) {
+          item.p = precos[item.id];
+        }
+      });
+    });
+  });
 }
 
 const gf = id => fotos['f_' + id] || '';
@@ -610,7 +603,6 @@ function enviar() {
   const tot = carrinho.reduce((s,i) => s+i.p*i.qty, 0);
   msg += `\n*Total estimado: ${fmt(tot)}*\n\nAguardo confirmação! 😊`;
 
-  // ── Rastreamento: dispara evento pro GTM antes de abrir o WhatsApp ──
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
     event: 'clique_whatsapp',
@@ -621,13 +613,11 @@ function enviar() {
     currency: 'BRL'
   });
 
-  // Adiciona keyword de origem à mensagem
   const keyword = getUtmKeyword();
   const msgFinal = `${keyword} ${msg}`;
   window.open(`https://wa.me/${WPP}?text=${encodeURIComponent(msgFinal)}`, '_blank');
 }
 
-// ── Fotos via Sheets ──
 function abrirPh(type, id, title, sub) {
   phTyp = type; phTgt = id;
   document.getElementById('phtitle').textContent = title;
@@ -677,7 +667,6 @@ renderNav();
 renderContent();
 carregarFotos();
 
-// ── Rastreamento botão flutuante WhatsApp ──
 function abrirWppFlutuante(e) {
   e.preventDefault();
   window.dataLayer = window.dataLayer || [];
