@@ -314,6 +314,22 @@ let logoClicks = 0;
 let logoTimer = null;
 
 // ── Carrega cardápio + fotos da planilha ──
+
+// Prefixos por aba — compatível com IDs antigos (f_b1, f_be1, etc.)
+const PREFIXOS = {
+  'Bolos':              'b',
+  'Bolos Especiais':    'be',
+  'Bolos Gourmet':      'bg',
+  'Tortas Doces':       'td',
+  'Bolos Simples':      'bs',
+  'Doces Especiais':    'de',
+  'Doces Tradicionais': 'dt',
+  'Salgados':           'sf',
+  'Salgados Especiais': 'se',
+  'Tortas Salgadas':    'ts',
+  'Baguetes':           'bag',
+};
+
 async function carregarCardapio() {
   try {
     const [rCat, rFotos] = await Promise.all([
@@ -323,21 +339,20 @@ async function carregarCardapio() {
     const jCat   = await rCat.json();
     const jFotos = await rFotos.json();
 
-    // Monta CATS com id gerado por índice: cat.key + índice global por categoria
     if (jCat.cats && jCat.cats.length) {
       CATS = jCat.cats.map(cat => ({
         ...cat,
         grupos: cat.grupos.map(grupo => ({
           ...grupo,
           itens: grupo.itens.map((item, i) => {
-            // ID = prefixo da categoria + índice (ex: bolos_0, tortas_1)
-            // Usamos o nome normalizado como ID para compatibilidade com fotos salvas
-            const id = slugify(cat.key) + '_' + slugify(item.n);
+            // ID no formato antigo: prefixo + índice a partir de 1 (ex: b1, be2, bg3)
+            const prefixo = PREFIXOS[grupo.aba] || slugify(cat.key);
+            const id = prefixo + (i + 1);
             return {
               id,
-              n: item.n,
-              p: item.p,
-              u: item.u || '',
+              n:         item.n,
+              p:         item.p,
+              u:         item.u         || '',
               recheio:   item.recheio   || '',
               cobertura: item.cobertura || '',
             };
@@ -352,7 +367,6 @@ async function carregarCardapio() {
     renderContent();
   } catch(e) {
     console.warn('Erro ao carregar cardápio:', e);
-    // fallback: renderiza com CATS vazio (mostra tela em branco)
     renderNav();
     renderContent();
   }
