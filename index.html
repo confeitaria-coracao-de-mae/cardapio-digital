@@ -4,15 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cardápio — Coração de Mãe</title>
-<!-- GTM dataLayer init -->
 <script>window.dataLayer = window.dataLayer || [];</script>
-<!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-56P6VVB3');</script>
-<!-- End Google Tag Manager -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -26,7 +23,6 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 .ht{font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px;font-style:italic;position:relative;z-index:1}
 .admin-badge{position:fixed;top:10px;right:10px;z-index:500;background:var(--red);color:white;border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;letter-spacing:1px;display:none;cursor:pointer}
 .admin-mode .admin-badge{display:block}
-/* ── Nav nova: grid de cards ── */
 .nav{background:var(--blk);position:sticky;top:0;z-index:100;padding:10px 12px 8px}
 .navrow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .nb{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.55);border:1.5px solid transparent;border-radius:10px;padding:8px 4px 7px;font-family:'Lato',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:4px;line-height:1.2}
@@ -129,40 +125,14 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 .fn{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:5px}
 .fi{font-size:12px;color:rgba(255,255,255,.42);line-height:1.9}
 .fr{color:var(--red)}
-
-/* ── Botão flutuante WhatsApp ── */
-.wpp-float{
-  position:fixed;
-  bottom:80px;
-  right:18px;
-  z-index:299;
-  width:54px;
-  height:54px;
-  background:#25D366;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 4px 16px rgba(37,211,102,0.45);
-  cursor:pointer;
-  text-decoration:none;
-  transition:transform .2s, box-shadow .2s;
-  animation: pulse-wpp 2.5s infinite;
-}
+.wpp-float{position:fixed;bottom:80px;right:18px;z-index:299;width:54px;height:54px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,0.45);cursor:pointer;text-decoration:none;transition:transform .2s, box-shadow .2s;animation:pulse-wpp 2.5s infinite}
 .wpp-float:hover{transform:scale(1.08);box-shadow:0 6px 22px rgba(37,211,102,0.55)}
-@keyframes pulse-wpp{
-  0%,100%{box-shadow:0 4px 16px rgba(37,211,102,0.45)}
-  50%{box-shadow:0 4px 28px rgba(37,211,102,0.75)}
-}
-/* Esconde quando o carrinho estiver visível pra não sobrepor */
+@keyframes pulse-wpp{0%,100%{box-shadow:0 4px 16px rgba(37,211,102,0.45)}50%{box-shadow:0 4px 28px rgba(37,211,102,0.75)}}
 .cart.vis ~ .wpp-float{bottom:90px}
 </style>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-56P6VVB3"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-56P6VVB3" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <button class="admin-badge" onclick="sairAdmin()">✓ Admin — Sair</button>
 
@@ -220,8 +190,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h3>Área restrita</h3>
     <p>Digite a senha para acessar o modo de edição</p>
     <input class="senhainp" id="senhainp" type="password" placeholder="••••••" maxlength="20" onkeydown="if(event.key==='Enter')verificaSenha()">
-    <div class="senhahint" id="senhahint"></div>
-    <br>
+    <div class="senhahint" id="senhahint"></div><br>
     <button class="bsenha" onclick="verificaSenha()">Entrar</button>
     <button class="bcancelsenha" onclick="fechaSenha()">Cancelar</button>
   </div>
@@ -239,11 +208,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </div>
 
-<!-- Botão flutuante WhatsApp -->
-<a class="wpp-float" id="wpp-float-btn"
-   href="#"
-   onclick="abrirWppFlutuante(event)"
-   aria-label="Falar no WhatsApp">
+<a class="wpp-float" id="wpp-float-btn" href="#" onclick="abrirWppFlutuante(event)" aria-label="Falar no WhatsApp">
   <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
   </svg>
@@ -259,26 +224,25 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLrgMes-S3ITuprcvBe
 const WPP = '554133273140';
 const SENHA = 'cdm2026';
 
-// ── Leitura de UTM para rastreamento de origem ──
-const UTM_KEYWORD_MAP = {
-  'google_maps':   'google maps',
-  'instagram':     'instagram',
-  'facebook':      'facebook',
-  'meta':          'anuncio',
-  'google':        'google ads',
+// ── Mensagens por UTM — sem keyword na frente, limpas pro cliente ──
+const UTM_MSG_MAP = {
+  'google_maps': 'Olá, vim pelo Google Maps e gostaria de fazer um orçamento',
+  'instagram':   'Olá, vim pelo Instagram e gostaria de fazer um orçamento',
+  'facebook':    'Olá, vim pelo Facebook e gostaria de fazer um orçamento',
+  'meta':        'Olá, vi o anúncio e gostaria de fazer um orçamento',
+  'google':      'Olá, vim pelo Google Ads e gostaria de fazer um orçamento',
 };
 
-function getUtmKeyword() {
-  const params = new URLSearchParams(window.location.search);
-  const source = params.get('utm_source') || '';
-  return UTM_KEYWORD_MAP[source.toLowerCase()] || 'cardapio';
+function getUtmSource() {
+  return (new URLSearchParams(window.location.search).get('utm_source') || '').toLowerCase();
+}
+
+function getMsgInicio() {
+  return UTM_MSG_MAP[getUtmSource()] || 'Olá, gostaria de fazer um orçamento';
 }
 
 function buildWppUrl(msgExtra) {
-  const keyword = getUtmKeyword();
-  const texto = msgExtra
-    ? `${keyword} ${msgExtra}`
-    : `${keyword} Olá! Gostaria de fazer um pedido`;
+  const texto = msgExtra || getMsgInicio();
   return `https://wa.me/${WPP}?text=${encodeURIComponent(texto)}`;
 }
 
@@ -313,21 +277,10 @@ let phTyp = null;
 let logoClicks = 0;
 let logoTimer = null;
 
-// ── Carrega cardápio + fotos da planilha ──
-
-// Prefixos por aba — compatível com IDs antigos (f_b1, f_be1, etc.)
 const PREFIXOS = {
-  'Bolos':              'b',
-  'Bolos Especiais':    'be',
-  'Bolos Gourmet':      'bg',
-  'Tortas Doces':       'td',
-  'Bolos Simples':      'bs',
-  'Doces Especiais':    'de',
-  'Doces Tradicionais': 'dt',
-  'Salgados':           'sf',
-  'Salgados Especiais': 'se',
-  'Tortas Salgadas':    'ts',
-  'Baguetes':           'bag',
+  'Bolos':'b','Bolos Especiais':'be','Bolos Gourmet':'bg','Tortas Doces':'td',
+  'Bolos Simples':'bs','Doces Especiais':'de','Doces Tradicionais':'dt',
+  'Salgados':'sf','Salgados Especiais':'se','Tortas Salgadas':'ts','Baguetes':'bag',
 };
 
 async function carregarCardapio() {
@@ -338,31 +291,20 @@ async function carregarCardapio() {
     ]);
     const jCat   = await rCat.json();
     const jFotos = await rFotos.json();
-
     if (jCat.cats && jCat.cats.length) {
       CATS = jCat.cats.map(cat => ({
         ...cat,
         grupos: cat.grupos.map(grupo => ({
           ...grupo,
           itens: grupo.itens.map((item, i) => {
-            // ID no formato antigo: prefixo + índice a partir de 1 (ex: b1, be2, bg3)
             const prefixo = PREFIXOS[grupo.aba] || slugify(cat.key);
             const id = prefixo + (i + 1);
-            return {
-              id,
-              n:         item.n,
-              p:         item.p,
-              u:         item.u         || '',
-              recheio:   item.recheio   || '',
-              cobertura: item.cobertura || '',
-            };
+            return { id, n:item.n, p:item.p, u:item.u||'', recheio:item.recheio||'', cobertura:item.cobertura||'' };
           })
         }))
       }));
     }
-
     if (jFotos.fotos) fotos = { ...fotos, ...jFotos.fotos };
-
     renderNav();
     renderContent();
   } catch(e) {
@@ -372,19 +314,14 @@ async function carregarCardapio() {
   }
 }
 
-// Gera slug para ID: "Ouro Branco" → "ouro_branco"
 function slugify(str) {
-  return str.toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '_')
-    .replace(/^_|_$/g, '');
+  return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
 }
 
 const gf = id => fotos['f_' + id] || '';
 const gc = k  => fotos['c_' + k]  || '';
 const fmt = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-// ── Admin: 5 cliques no logo + senha ──
 function logoClick() {
   logoClicks++;
   clearTimeout(logoTimer);
@@ -424,8 +361,6 @@ function sairAdmin() {
   renderContent();
 }
 
-// ── Catálogo — carregado dinamicamente da planilha ──
-// CATS é populado por carregarCardapio(). Começa vazio.
 let CATS = [];
 
 function renderNav() {
@@ -542,7 +477,9 @@ function updCart() {
 
 function enviar() {
   if (!carrinho.length) return;
-  let msg = '🍰 *Olá! Gostaria de fazer um pedido no Coração de Mãe:*\n\n';
+  // Mensagem de abertura limpa, sem keyword
+  const msgInicio = getMsgInicio();
+  let msg = `${msgInicio}\n\n🍰 *Meu pedido:*\n\n`;
   carrinho.forEach(i => {
     msg += `• *${i.n}* x${i.qty} — ${fmt(i.p*i.qty)}`;
     if (i.u) msg += ` (${i.u})`;
@@ -552,24 +489,19 @@ function enviar() {
   const tot = carrinho.reduce((s,i) => s+i.p*i.qty, 0);
   msg += `\n*Total estimado: ${fmt(tot)}*\n\nAguardo confirmação! 😊`;
 
-  // ── Rastreamento: dispara evento pro GTM antes de abrir o WhatsApp ──
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
     event: 'clique_whatsapp',
     origem_clique: 'carrinho',
-    utm_source: new URLSearchParams(window.location.search).get('utm_source') || 'direto',
+    utm_source: getUtmSource() || 'direto',
     valor_carrinho: parseFloat(tot.toFixed(2)),
     qtd_itens: carrinho.reduce((s,i) => s+i.qty, 0),
     currency: 'BRL'
   });
 
-  // Adiciona keyword de origem à mensagem
-  const keyword = getUtmKeyword();
-  const msgFinal = `${keyword} ${msg}`;
-  window.open(`https://wa.me/${WPP}?text=${encodeURIComponent(msgFinal)}`, '_blank');
+  window.open(`https://wa.me/${WPP}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
-// ── Fotos via Sheets ──
 function abrirPh(type, id, title, sub) {
   phTyp = type; phTgt = id;
   document.getElementById('phtitle').textContent = title;
@@ -596,10 +528,8 @@ async function salvaFoto() {
   const key = phTyp === 'cover' ? 'c_' + phTgt : 'f_' + phTgt;
   const btn = document.getElementById('bsaveph');
   const msg = document.getElementById('salvando');
-
   btn.disabled = true;
   msg.textContent = '⏳ Salvando no Google Sheets...';
-
   try {
     await fetch(SCRIPT_URL, {
       method: 'POST',
@@ -615,7 +545,6 @@ async function salvaFoto() {
 }
 
 // ── Init ──
-// Mostra loading enquanto busca a planilha
 document.getElementById('content').innerHTML = `
   <div style="text-align:center;padding:60px 20px;color:var(--tx3)">
     <div style="font-size:36px;margin-bottom:12px">🎂</div>
@@ -623,14 +552,13 @@ document.getElementById('content').innerHTML = `
   </div>`;
 carregarCardapio();
 
-// ── Rastreamento botão flutuante WhatsApp ──
 function abrirWppFlutuante(e) {
   e.preventDefault();
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
     event: 'clique_whatsapp',
     origem_clique: 'botao_flutuante',
-    utm_source: new URLSearchParams(window.location.search).get('utm_source') || 'direto',
+    utm_source: getUtmSource() || 'direto',
     valor_carrinho: 0,
     qtd_itens: 0,
     currency: 'BRL'
