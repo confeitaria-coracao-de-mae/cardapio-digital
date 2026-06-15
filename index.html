@@ -313,13 +313,57 @@ let phTyp = null;
 let logoClicks = 0;
 let logoTimer = null;
 
-// ── Carrega fotos do Sheets ao abrir ──
-async function carregarFotos() {
+// ── Carrega cardápio + fotos da planilha ──
+async function carregarCardapio() {
   try {
-    const r = await fetch(SCRIPT_URL + '?acao=listarFotos');
-    const j = await r.json();
-    if (j.fotos) { fotos = {...fotos, ...j.fotos}; renderContent(); }
-  } catch(e) { console.warn('Fotos offline', e); }
+    const [rCat, rFotos] = await Promise.all([
+      fetch(SCRIPT_URL + '?acao=listarCardapio'),
+      fetch(SCRIPT_URL + '?acao=listarFotos')
+    ]);
+    const jCat   = await rCat.json();
+    const jFotos = await rFotos.json();
+
+    // Monta CATS com id gerado por índice: cat.key + índice global por categoria
+    if (jCat.cats && jCat.cats.length) {
+      CATS = jCat.cats.map(cat => ({
+        ...cat,
+        grupos: cat.grupos.map(grupo => ({
+          ...grupo,
+          itens: grupo.itens.map((item, i) => {
+            // ID = prefixo da categoria + índice (ex: bolos_0, tortas_1)
+            // Usamos o nome normalizado como ID para compatibilidade com fotos salvas
+            const id = slugify(cat.key) + '_' + slugify(item.n);
+            return {
+              id,
+              n: item.n,
+              p: item.p,
+              u: item.u || '',
+              recheio:   item.recheio   || '',
+              cobertura: item.cobertura || '',
+            };
+          })
+        }))
+      }));
+    }
+
+    if (jFotos.fotos) fotos = { ...fotos, ...jFotos.fotos };
+
+    renderNav();
+    renderContent();
+  } catch(e) {
+    console.warn('Erro ao carregar cardápio:', e);
+    // fallback: renderiza com CATS vazio (mostra tela em branco)
+    renderNav();
+    renderContent();
+  }
+}
+
+// Gera slug para ID: "Ouro Branco" → "ouro_branco"
+function slugify(str) {
+  return str.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '');
 }
 
 const gf = id => fotos['f_' + id] || '';
@@ -366,122 +410,9 @@ function sairAdmin() {
   renderContent();
 }
 
-// ── Catálogo ──
-const CATS = [
-  {key:'bolos',label:'Bolos',icon:'🎂',sub:'por kg',grupos:[
-    {t:'BOLOS TRADICIONAIS — 1 KG',itens:[
-      {id:'b1',n:'Ouro Branco',p:82,desc:'Massa branca',det:{Recheio:'Brigadeiro branco, ouro branco e nata',Cobertura:'Chantilly ou nata e raspas de chocolate branco'}},
-      {id:'b2',n:'Ouro Branco com Morango',p:77,desc:'Massa branca e preta',det:{Recheio:'Brigadeiro branco, morango, ouro branco e nata',Cobertura:'Ganache branco e morango'}},
-      {id:'b3',n:'Sonho de Valsa',p:77,desc:'Massa preta',det:{Recheio:'Brigadeiro branco, sonho de valsa e nata',Cobertura:'Ganache preto e sonho de valsa'}},
-      {id:'b4',n:'Sonho de Valsa com Morango',p:77,desc:'Massa preta',det:{Recheio:'Brigadeiro branco, sonho de valsa, morango e nata',Cobertura:'Chantilly ou nata e morango'}},
-      {id:'b5',n:'Martha Rocha com Ameixa',p:90,desc:'Massa branca e preta',det:{Recheio:'Creme de ovo, nata, suspiro crocante e ameixa',Cobertura:'Chantilly ou nata, fios de ovo e ameixa'}},
-      {id:'b6',n:'Martha Rocha com Damasco',p:120,desc:'Massa preta',det:{Recheio:'Creme trufado',Cobertura:'Chantilly de chocolate'}},
-      {id:'b7',n:'Fantástico',p:77,desc:'Massa branca',det:{Recheio:'Doce de leite, abacaxi e nata',Cobertura:'Chantilly ou nata, abacaxi e doce de leite'}},
-      {id:'b8',n:'Floresta Negra',p:90,desc:'Massa preta',det:{Recheio:'Ganache, cereja e nata',Cobertura:'Ganache de chocolate preto meio amargo'}},
-      {id:'b9',n:'4 Leites com Morango',p:85,desc:'Massa branca',det:{Recheio:'Leite bem pó, creme de leite, leite condensado, leite de coco e morango',Cobertura:'Chantininho'}},
-      {id:'b10',n:'Coração de Mãe',p:80,desc:'Massa branca e preta',det:{Recheio:'Ganache, cereja, mousse de morango, suspiro e morango',Cobertura:'Chantilly, geleia de morango, mousse preto, morango e cereja'}},
-      {id:'b11',n:'Dois Amores',p:77,desc:'Massa branca e preta',det:{Recheio:'Brigadeiro branco e brigadeiro preto',Cobertura:'Chantilly ou nata, mousse branco e preto'}},
-      {id:'b12',n:'Dois Amores com Morango',p:77,desc:'Massa branca e preta',det:{Recheio:'Brigadeiro branco e preto, morango e coco',Cobertura:'Chantilly ou nata, mousse branco e preto e morango'}},
-      {id:'b13',n:'Napolitano',p:77,desc:'Massa preta',det:{Recheio:'Brigadeiro preto, nata e morango',Cobertura:'Chantilly e morango'}},
-      {id:'b14',n:'Morango com Suspiro',p:77,desc:'Massa branca',det:{Recheio:'Brigadeiro branco, morango, suspiro e nata',Cobertura:'Chantilly ou nata, morango e suspiro'}},
-      {id:'b15',n:'Morango',p:77,desc:'Massa branca',det:{Recheio:'Brigadeiro branco e morango',Cobertura:'Chantilly ou nata e morango'}},
-      {id:'b16',n:'4 Leites',p:75,desc:'Massa branca',det:{Recheio:'Leite bem pó, creme de leite, leite condensado e leite de coco',Cobertura:'Chantininho'}},
-      {id:'b17',n:'Frutas',p:77,desc:'Massa branca',det:{Recheio:'Brigadeiro branco, abacaxi, pêssego e nata',Cobertura:'Chantilly ou nata, frutas e geleia de pêssego'}},
-      {id:'b18',n:'Abacaxi com Cocada',p:75,desc:'Massa branca e preta',det:{Recheio:'Brigadeiro branco, abacaxi, coco e nata',Cobertura:'Chantilly ou nata, abacaxi e coco'}},
-      {id:'b19',n:'Ayrton Senna',p:80,desc:'Massa branca e preta',det:{Recheio:'Mousse preto, brigadeiro branco, chantilly de chocolate e morango',Cobertura:'Chantilly preto, mousse preto e morango'}},
-      {id:'b20',n:'Abacaxi',p:70,desc:''},{id:'b21',n:'Prestígio Preto',p:77,desc:''},{id:'b22',n:'Prestígio Branco',p:77,desc:''},
-      {id:'b23',n:'Tropical',p:75,desc:''},{id:'b24',n:'Sensação',p:82,desc:''},{id:'b25',n:'Ninho com Abacaxi',p:80,desc:''},
-      {id:'b26',n:'Xuxa Cereja',p:82,desc:''},{id:'b27',n:'Xuxa Uva',p:82,desc:''},{id:'b28',n:'Xuxa Morango',p:82,desc:''},
-    ]},
-    {t:'BOLOS ESPECIAIS — 1 KG',itens:[
-      {id:'be1',n:'Strogonoff de Nozes',p:90,desc:'Massa branca e preta',det:{Recheio:'Creme de nozes',Cobertura:'Chantilly, caramelo, cereja e nozes'}},
-      {id:'be2',n:'Ferrero Rocher',p:120,desc:'Massa preta',det:{Recheio:'Brigadeiro, creme de avelã, avelã moído, chocolate, leite e chantilly',Cobertura:'Mousse preto e avelã'}},
-    ]},
-    {t:'BOLOS GOURMET — UNIDADE 2 KG',itens:[
-      {id:'bg1',n:'4 Leite e Morango',p:259.90,desc:'Massa branca',det:{Recheio:'Creme 4 leite e morango',Cobertura:'Ganache chocolate branco e brigadeiros de leite ninho e morango'}},
-      {id:'bg2',n:'Trufado de Chocolate com Maracujá',p:259.90,desc:'Nega Maluca',det:{Recheio:'Trufado de maracujá e de chocolate',Cobertura:'Trufado e brigadeiros de maracujá'}},
-      {id:'bg3',n:'Nega Maluca com 4 Leite',p:259.90,desc:'Nega Maluca',det:{Recheio:'Creme 4 leite',Cobertura:'Ganache chocolate branco, com brigadeiro ninho e brigadeiro gourmet'}},
-      {id:'bg4',n:'4 Leites com Nutella',p:269.90,desc:'Massa branca',det:{Recheio:'Leite bem pó, creme de leite, leite condensado, leite de coco e nutella',Cobertura:'Chantininho'}},
-      {id:'bg5',n:'4 Leites com Nutella e Morango',p:306.40,desc:'Massa branca',det:{Recheio:'Creme 4 leites, nutella e morango',Cobertura:'Chantininho'}},
-      {id:'bg6',n:'Nega Maluca com Ninho e Morango',p:259.90,desc:'Nega Maluca',det:{Recheio:'Brigadeiro de ninho e morango',Cobertura:'Chocolate ao leite'}},
-      {id:'bg7',n:'Red Velvet',p:259.90,desc:'Massa amanteigada vermelha',det:{Recheio:'4 leites',Cobertura:'Morango e cereja'}},
-      {id:'bg8',n:'Brigadeiro Trufado de Chocolate',p:224.90,desc:'Nega Maluca',det:{Recheio:'Brigadeiro trufado de chocolate',Cobertura:'Ganache chocolate preto e brigadeiros gourmet'}},
-      {id:'bg9',n:'Trufado de Paçoca com Chocolate',p:224.90,desc:'Nega Maluca',det:{Recheio:'Brigadeiro branco trufado de paçoca',Cobertura:'Ganache chocolate preto com brigadeiro de paçoca'}},
-    ]},
-  ]},
-  {key:'tortas',label:'Tortas Doces',icon:'🥧',sub:'1 kg',grupos:[{t:'TORTAS DOCES — 1 KG',itens:[
-    {id:'td1',n:'Torta de Limão',p:52.90},{id:'td2',n:'Torta de Maracujá',p:56.90},
-    {id:'td3',n:'Torta Alemã',p:79.90},{id:'td4',n:'Torta Holandesa',p:133.90},
-    {id:'td5',n:'Torta Banoffee',p:69.90},{id:'td6',n:'Torta Morangoffe',p:82.90},
-    {id:'td7',n:'Torta de Requeijão',p:82.90},{id:'td8',n:'Torta Requeijão com Goiabada',p:82.90},
-    {id:'td9',n:'Cheesecake de Frutas Vermelhas',p:126.90},{id:'td10',n:'Cheesecake de Morango',p:122.90},
-  ]}]},
-  {key:'simples',label:'Bolos Simples',icon:'🍰',sub:'1 kg',grupos:[{t:'BOLOS SIMPLES — 1 KG',itens:[
-    {id:'bs1',n:'Cenoura',p:43},{id:'bs2',n:'Cuque de Farofa',p:43},{id:'bs3',n:'Cuque com Banana',p:43},
-    {id:'bs4',n:'Nega Maluca',p:43},{id:'bs5',n:'Nega Maluca Recheada',p:55},{id:'bs6',n:'Formigueiro',p:43},
-    {id:'bs7',n:'Fubá',p:43},{id:'bs8',n:'Fubá com Goiabada',p:43},{id:'bs9',n:'Toalha Felpuda',p:43},
-    {id:'bs10',n:'Toalha Felpuda Recheada',p:55},{id:'bs11',n:'Laranja',p:43},{id:'bs12',n:'Mármore',p:43},
-  ]}]},
-  {key:'doces',label:'Doces',icon:'🍬',sub:'por cento',grupos:[
-    {t:'DOCES ESPECIAIS — CENTO',itens:[
-      {id:'de1',n:'Bombom de Nozes',p:380,u:'cento'},{id:'de2',n:'Camafeu',p:280,u:'cento'},
-      {id:'de3',n:'Espelhados Uva/Morango',p:380,u:'cento'},{id:'de4',n:'Espelhados Nozes/Damasco/Cereja',p:400,u:'cento'},
-      {id:'de5',n:'Glacados Morango/Uva',p:380,u:'cento'},{id:'de6',n:'Glacados Damasco/Cereja',p:380,u:'cento'},
-      {id:'de7',n:'Mousse Tacinha Limão/Maracujá/Brigadeiro',p:350,u:'cento'},
-      {id:'de8',n:'Mini Tortinhas Maracujá',p:200,u:'cento'},{id:'de9',n:'Mini Tortinhas Kiwi',p:200,u:'cento'},
-      {id:'de10',n:'Folhados Romeu e Julieta',p:150,u:'cento'},{id:'de11',n:'Bombon Abacaxi/Cereja',p:380,u:'cento'},
-      {id:'de12',n:'Bombon Uva/Morango',p:380,u:'cento'},{id:'de13',n:'Leite Ninho e Nutella',p:260,u:'cento'},
-      {id:'de14',n:'Surpresa de Uva/Morango',p:240,u:'cento'},{id:'de15',n:'Bicho de Pé',p:200,u:'cento'},
-      {id:'de16',n:'Folhado de Banana/Maçã',p:150,u:'cento'},{id:'de17',n:'Carolina Creme',p:200,u:'cento'},
-      {id:'de18',n:'Carolina Chocolate Branco/Preto',p:200,u:'cento'},{id:'de19',n:'Carolina Doce de Leite',p:200,u:'cento'},
-      {id:'de20',n:'Mini Croissant de Chocolate',p:150,u:'cento'},{id:'de21',n:'Mini Tortinhas de Limão',p:180,u:'cento'},
-      {id:'de22',n:'Mini Tortinhas de Morango',p:180,u:'cento'},{id:'de23',n:'Mini Tortinhas de Nozes',p:190,u:'cento'},
-      {id:'de24',n:'Mini Tortinhas de Chocolate',p:180,u:'cento'},{id:'de25',n:'Conchinhas de Morango',p:300,u:'cento'},
-      {id:'de26',n:'Ouriço',p:250,u:'cento'},
-    ]},
-    {t:'DOCES TRADICIONAIS — CENTO',itens:[
-      {id:'dt1',n:'Brigadeiro Preto',p:150,u:'cento'},{id:'dt2',n:'Brigadeiro Branco',p:150,u:'cento'},
-      {id:'dt3',n:'Beijinho',p:150,u:'cento'},{id:'dt4',n:'Dois Amores',p:190,u:'cento'},
-      {id:'dt5',n:'Quindim',p:160,u:'cento'},{id:'dt6',n:'Abacaxi',p:150,u:'cento'},
-      {id:'dt7',n:'Cajuzinho',p:150,u:'cento'},{id:'dt8',n:'Olho de Sogra',p:190,u:'cento'},
-      {id:'dt9',n:'Leite Ninho',p:180,u:'cento'},
-    ]},
-  ]},
-  {key:'salgados',label:'Salgados',icon:'🥐',sub:'por cento',grupos:[
-    {t:'SALGADOS FRITOS — CENTO',itens:[
-      {id:'sf1',n:'Bolinha de Queijo',p:104,u:'cento'},{id:'sf2',n:'Coxinha',p:104,u:'cento'},
-      {id:'sf3',n:'Croquete de Frango',p:104,u:'cento'},{id:'sf4',n:'Kibe',p:104,u:'cento'},
-      {id:'sf5',n:'Pastel de Vento (Carne ou Queijo)',p:104,u:'cento'},
-      {id:'sf6',n:'Risoles (Carne ou Frios)',p:104,u:'cento'},{id:'sf7',n:'Risoles de Palmito',p:104,u:'cento'},
-    ]},
-    {t:'MINI PIZZAS — CENTO',itens:[
-      {id:'sm1',n:'Mini Pizza Tomate Seco',p:130,u:'cento'},{id:'sm2',n:'Mini Pizza Frios',p:130,u:'cento'},
-      {id:'sm3',n:'Mini Pizza Frango com Catupiry',p:130,u:'cento'},
-    ]},
-    {t:'SALGADOS ESPECIAIS — CENTO',itens:[
-      {id:'se1',n:'Canapés Frango/Atum',p:130,u:'cento'},{id:'se2',n:'Mini Sanduíche de Frios',p:380,u:'cento'},
-      {id:'se3',n:'Mini Sanduíche de Frango',p:380,u:'cento'},{id:'se4',n:'Mini Sanduíche de Peito de Peru',p:400,u:'cento'},
-      {id:'se5',n:'Barquete / Salpicão / Tropical',p:250,u:'cento'},{id:'se6',n:'Folhado de Camarão',p:250,u:'cento'},
-      {id:'se7',n:'Carolina de Frango',p:190,u:'cento'},{id:'se8',n:'Carolina de Ricota',p:200,u:'cento'},
-      {id:'se9',n:'Carolina de Atum',p:230,u:'cento'},{id:'se10',n:'Quiche de Champignon',p:150,u:'cento'},
-      {id:'se11',n:'Quiche de Queijo e Presunto',p:150,u:'cento'},{id:'se12',n:'Quiche de Espinafre',p:150,u:'cento'},
-      {id:'se13',n:'Quiche de Queijo',p:150,u:'cento'},{id:'se14',n:'Quiche de Alho Poró',p:150,u:'cento'},
-      {id:'se15',n:'Quiche de Bacon',p:160,u:'cento'},
-    ]},
-  ]},
-  {key:'tortas-salgadas',label:'Tortas Salgadas',icon:'🥘',sub:'por kg',grupos:[{t:'TORTAS SALGADAS — KG',itens:[
-    {id:'ts1',n:'Torta Quiche Sabores',p:69.90,u:'kg'},{id:'ts2',n:'Empadão de Camarão',p:100,u:'kg'},
-    {id:'ts3',n:'Empadão de Frango',p:60,u:'kg'},{id:'ts4',n:'Empadão de Frango c/ Catupiry',p:65.50,u:'kg'},
-    {id:'ts5',n:'Empadão de Palmito',p:65.50,u:'kg'},{id:'ts6',n:'Empadão Misto',p:59.90,u:'kg'},
-    {id:'ts7',n:'Torta de Legumes c/ Nata',p:60,u:'kg'},{id:'ts8',n:'Torta de Frango c/ Nata',p:60,u:'kg'},
-    {id:'ts9',n:'Torta Mista c/ Nata',p:65,u:'kg'},{id:'ts10',n:'Torta de Palmito c/ Nata',p:60,u:'kg'},
-    {id:'ts11',n:'Torta de Legumes',p:51,u:'kg'},
-  ]}]},
-  {key:'baguetes',label:'Baguetes',icon:'🥖',sub:'por unidade',grupos:[{t:'BAGUETES — UNIDADE',itens:[
-    {id:'bag1',n:'Peru',p:80,u:'unidade'},{id:'bag2',n:'Lombinho',p:80,u:'unidade'},
-    {id:'bag3',n:'Frios',p:80,u:'unidade'},{id:'bag4',n:'Frango',p:80,u:'unidade'},{id:'bag5',n:'Atum',p:80,u:'unidade'},
-  ]}]},
-];
+// ── Catálogo — carregado dinamicamente da planilha ──
+// CATS é populado por carregarCardapio(). Começa vazio.
+let CATS = [];
 
 function renderNav() {
   document.getElementById('navrow').innerHTML = CATS.map(c =>
@@ -505,7 +436,7 @@ function covHdr(cat) {
 
 function cardH(p, icon) {
   const foto = gf(p.id);
-  const cardDesc = (p.det && p.det.Recheio) ? p.det.Recheio : (p.desc || '');
+  const cardDesc = p.recheio || '';
   return `<div class="card" onclick="abrirProd('${p.id}')">
     <div class="cimg">
       ${foto?`<img src="${foto}" alt="${p.n}" onerror="this.style.display='none'">`:`<span class="noph">${icon}</span>`}
@@ -547,13 +478,16 @@ function abrirProd(id) {
   document.getElementById('obsinp').value = '';
   document.getElementById('mtag').textContent = cat.label + (cat.sub?' · '+cat.sub:'');
   document.getElementById('mttl').textContent = p.n;
-  document.getElementById('mdsc').textContent = p.desc || '';
+  document.getElementById('mdsc').textContent = p.recheio || '';
   document.getElementById('mprc').textContent = fmt(p.p);
   document.getElementById('munt').textContent = p.u ? 'por '+p.u : '';
   const det = document.getElementById('mdet');
-  if (p.det && Object.keys(p.det).length) {
+  const detItens = [];
+  if (p.recheio)   detItens.push(['Recheio',   p.recheio]);
+  if (p.cobertura) detItens.push(['Cobertura', p.cobertura]);
+  if (detItens.length) {
     det.style.display = 'grid';
-    det.innerHTML = Object.entries(p.det).map(([k,v])=>`<div><div class="mdlb">${k}</div><div class="mdvl">${v}</div></div>`).join('');
+    det.innerHTML = detItens.map(([k,v])=>`<div><div class="mdlb">${k}</div><div class="mdvl">${v}</div></div>`).join('');
   } else det.style.display = 'none';
   const foto = gf(id);
   document.getElementById('mimg').innerHTML = foto
@@ -667,9 +601,13 @@ async function salvaFoto() {
 }
 
 // ── Init ──
-renderNav();
-renderContent();
-carregarFotos();
+// Mostra loading enquanto busca a planilha
+document.getElementById('content').innerHTML = `
+  <div style="text-align:center;padding:60px 20px;color:var(--tx3)">
+    <div style="font-size:36px;margin-bottom:12px">🎂</div>
+    <div style="font-size:14px;letter-spacing:1px">Carregando cardápio...</div>
+  </div>`;
+carregarCardapio();
 
 // ── Rastreamento botão flutuante WhatsApp ──
 function abrirWppFlutuante(e) {
