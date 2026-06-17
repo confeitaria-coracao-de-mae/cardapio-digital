@@ -224,7 +224,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLrgMes-S3ITuprcvBe
 const WPP = '554133273140';
 const SENHA = 'cdm2026';
 
-// ── Mensagens por UTM — sem keyword na frente, limpas pro cliente ──
+// ── Mensagens por UTM ──
 const UTM_MSG_MAP = {
   'google_maps': 'Olá, vim pelo Google Maps e gostaria de fazer um orçamento',
   'instagram':   'Olá, vim pelo Instagram e gostaria de fazer um orçamento',
@@ -236,37 +236,19 @@ const UTM_MSG_MAP = {
 function getUtmSource() {
   return (new URLSearchParams(window.location.search).get('utm_source') || '').toLowerCase();
 }
-
 function getMsgInicio() {
   return UTM_MSG_MAP[getUtmSource()] || 'Olá, gostaria de fazer um orçamento';
 }
-
 function buildWppUrl(msgExtra) {
   const texto = msgExtra || getMsgInicio();
   return `https://wa.me/${WPP}?text=${encodeURIComponent(texto)}`;
 }
 
-let fotos = {
-  'f_b11': 'https://drive.google.com/thumbnail?id=1Y3ntNfihvvOpJLTYMWxUqxuh8LIja4Yr&sz=w800',
-  'f_b9':  'https://drive.google.com/thumbnail?id=1lAB4iO6MdZ_m-xuZu2FZuVTWpDAo9R2N&sz=w800',
-  'f_b16': 'https://drive.google.com/thumbnail?id=1QmbZuygDU3mJTuQy7Hp876UpR14_Gdw0&sz=w800',
-  'f_b18': 'https://drive.google.com/thumbnail?id=1tI6SYZ_IevsV3o9w8civl7jPblW3maO2&sz=w800',
-  'f_b7':  'https://drive.google.com/thumbnail?id=1LybQFhVAmJcPQ6mZv8cRJZxS42zMEL3L&sz=w800',
-  'f_b8':  'https://drive.google.com/thumbnail?id=1gytjW83VNvk5qO0rVbP8m3eygJJDmN5o&sz=w800',
-  'f_b2':  'https://drive.google.com/thumbnail?id=1JwqEAolM_cs8I4haTdZFGrRtKIx3jC_c&sz=w800',
-  'f_b24': 'https://drive.google.com/thumbnail?id=1ATVBed2_YoWoXXurfjjL-wm4cDWXctVj&sz=w800',
-  'f_b28': 'https://drive.google.com/thumbnail?id=1U41LJM8znoaOsJMeLInm1gw7Y-K-WXdX&sz=w800',
-  'f_dt7': 'https://drive.google.com/thumbnail?id=1JGzDsgyRHJuorv9vwdSygmBO2gqmjOhO&sz=w800',
-  'f_b12': 'https://drive.google.com/thumbnail?id=1TFHji1L9zsKYJXuvy8A3zNmBtfzXqVwc&sz=w800',
-  'f_be1': 'https://drive.google.com/thumbnail?id=1uDmvh4BDTJS13cquXzPFRX3M_vGZFum6&sz=w800',
-  'f_b5':  'https://drive.google.com/thumbnail?id=1pQSPaqJCw-ZPXoBwHqmH1g0LHAurRQWR&sz=w800',
-  'f_b14': 'https://drive.google.com/thumbnail?id=1tYfKz3KT9t87iAKHrhfYyVds6CTmahPX&sz=w800',
-  'f_b13': 'https://drive.google.com/thumbnail?id=1vgOsjzkoEFwa_S_f5PAnXiifoT-oTHOT&sz=w800',
-  'f_b21': 'https://drive.google.com/thumbnail?id=1jeZPgOOgXRaPvJfEqfNCCpG__z-osenV&sz=w800',
-  'f_dt5': 'https://drive.google.com/thumbnail?id=1v4Hmr3XTt2Ai9r0bp-nPmPH6ara-hTgu&sz=w800',
-  'f_b4':  'https://drive.google.com/thumbnail?id=1y7T9gh2q9vYt2Y3Y-lf1OAKLuYBVR-JR&sz=w800',
-  'f_b3':  'https://drive.google.com/thumbnail?id=1H4O4U5qW-OCIfP9ofikPiPTGhtOR9p8X&sz=w800',
-};
+// ── CORREÇÃO 1: fotos 100% do Sheets, sem hardcode ──
+// Fonte única de verdade: aba "Fotos" na planilha.
+// Apagar pelo painel admin remove do Sheets e some do cardápio.
+let fotos = {};
+
 let admin = false;
 let catAtiva = 'bolos';
 let carrinho = [];
@@ -277,7 +259,87 @@ let phTyp = null;
 let logoClicks = 0;
 let logoTimer = null;
 
-const PREFIXOS = {
+// ── CORREÇÃO 2: IDs fixos por nome — não deslocam ao adicionar produtos ──
+// Espelho exato do NOMES_PRODUTOS no Apps Script.
+// Se adicionar produto novo na planilha: adicione aqui também com um ID novo (ex: b29).
+const NOME_PARA_ID = {
+  // Bolos Tradicionais
+  'ouro branco':'b1','ouro branco com morango':'b2','sonho de valsa':'b3',
+  'sonho de valsa com morango':'b4','martha rocha com ameixa':'b5','martha rocha com damasco':'b6',
+  'fantastico':'b7','floresta negra':'b8','4 leites com morango':'b9','coracao de mae':'b10',
+  'dois amores':'b11','dois amores com morango':'b12','napolitano':'b13',
+  'morango com suspiro':'b14','morango':'b15','4 leites':'b16','frutas':'b17',
+  'abacaxi com cocada':'b18','ayrton senna':'b19','abacaxi':'b20','prestigio preto':'b21',
+  'prestigio branco':'b22','tropical':'b23','sensacao':'b24','ninho com abacaxi':'b25',
+  'xuxa cereja':'b26','xuxa uva':'b27','xuxa morango':'b28',
+  // Bolos Especiais
+  'strogonoff de nozes':'be1','ferrero rocher':'be2',
+  // Bolos Gourmet
+  '4 leite e morango':'bg1','trufado de chocolate com maracuja':'bg2','nega maluca com 4 leite':'bg3',
+  '4 leites com nutella':'bg4','4 leites com nutella e morango':'bg5',
+  'nega maluca com ninho e morango':'bg6','red velvet':'bg7',
+  'brigadeiro trufado de chocolate':'bg8','trufado de pacoca com chocolate':'bg9',
+  // Tortas Doces
+  'torta de limao':'td1','torta de maracuja':'td2','torta alema':'td3','torta holandesa':'td4',
+  'torta banoffee':'td5','torta morangoffe':'td6','torta de requeijao':'td7',
+  'torta requeijao com goiabada':'td8','cheesecake de frutas vermelhas':'td9','cheesecake de morango':'td10',
+  // Bolos Simples
+  'cenoura':'bs1','cuque de farofa':'bs2','cuque com banana':'bs3','nega maluca':'bs4',
+  'nega maluca recheada':'bs5','formigueiro':'bs6','fuba':'bs7','fuba com goiabada':'bs8',
+  'toalha felpuda':'bs9','toalha felpuda recheada':'bs10','laranja':'bs11','marmore':'bs12',
+  // Doces Especiais
+  'bombom de nozes':'de1','camafeu':'de2','espelhados uva/morango':'de3',
+  'espelhados nozes/damasco/cereja':'de4','glacados morango/uva':'de5','glacados damasco/cereja':'de6',
+  'mousse tacinha limao/maracuja/brigadeiro':'de7','mini tortinhas maracuja':'de8',
+  'mini tortinhas kiwi':'de9','folhados romeu e julieta':'de10','bombon abacaxi/cereja':'de11',
+  'bombon uva/morango':'de12','leite ninho e nutella':'de13','surpresa de uva/morango':'de14',
+  'bicho de pe':'de15','folhado de banana/maca':'de16','carolina creme':'de17',
+  'carolina chocolate branco/preto':'de18','carolina doce de leite':'de19',
+  'mini croissant de chocolate':'de20','mini tortinhas de limao':'de21',
+  'mini tortinhas de morango':'de22','mini tortinhas de nozes':'de23',
+  'mini tortinhas de chocolate':'de24','conchinhas de morango':'de25','ourico':'de26',
+  // Doces Tradicionais
+  'brigadeiro preto':'dt1','brigadeiro branco':'dt2','beijinho':'dt3','dois amores':'dt4',
+  'quindim':'dt5','abacaxi':'dt6','cajuzinho':'dt7','olho de sogra':'dt8','leite ninho':'dt9',
+  // Salgados Fritos
+  'bolinha de queijo':'sf1','coxinha':'sf2','croquete de frango':'sf3','kibe':'sf4',
+  'pastel de vento (carne ou queijo)':'sf5','risoles (carne ou frios)':'sf6','risoles de palmito':'sf7',
+  // Mini Pizzas
+  'mini pizza tomate seco':'sm1','mini pizza frios':'sm2','mini pizza frango com catupiry':'sm3',
+  // Salgados Especiais
+  'canapes frango/atum':'se1','mini sanduiche de frios':'se2','mini sanduiche de frango':'se3',
+  'mini sanduiche de peito de peru':'se4','barquete / salpicao / tropical':'se5',
+  'folhado de camarao':'se6','carolina de frango':'se7','carolina de ricota':'se8',
+  'carolina de atum':'se9','quiche de champignon':'se10','quiche de queijo e presunto':'se11',
+  'quiche de espinafre':'se12','quiche de queijo':'se13','quiche de alho poro':'se14',
+  'quiche de bacon':'se15',
+  // Tortas Salgadas
+  'torta quiche sabores':'ts1','empadao de camarao':'ts2','empadao de frango':'ts3',
+  'empadao de frango c/ catupiry':'ts4','empadao de palmito':'ts5','empadao misto':'ts6',
+  'torta de legumes c/ nata':'ts7','torta de frango c/ nata':'ts8','torta mista c/ nata':'ts9',
+  'torta de palmito c/ nata':'ts10','torta de legumes':'ts11',
+  // Baguetes
+  'peru':'bag1','lombinho':'bag2','frios':'bag3','frango':'bag4','atum':'bag5',
+};
+
+// Contadores para produtos novos ainda não mapeados
+const _contadoresNovos = {};
+
+function resolverId(nomeOriginal, prefixoFallback) {
+  // Normaliza: minúsculas, remove acentos, mantém / e ()
+  const norm = nomeOriginal.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9/ ()]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+  if (NOME_PARA_ID[norm]) return NOME_PARA_ID[norm];
+  // Produto novo: gera ID temporário e avisa no console
+  _contadoresNovos[prefixoFallback] = (_contadoresNovos[prefixoFallback] || 0) + 1;
+  const novoId = prefixoFallback + '_novo' + _contadoresNovos[prefixoFallback];
+  console.warn(`[Cardápio] Produto sem ID fixo: "${nomeOriginal}" → ${novoId}. Adicione ao NOME_PARA_ID e ao Apps Script.`);
+  return novoId;
+}
+
+const PREFIXOS_ABA = {
   'Bolos':'b','Bolos Especiais':'be','Bolos Gourmet':'bg','Tortas Doces':'td',
   'Bolos Simples':'bs','Doces Especiais':'de','Doces Tradicionais':'dt',
   'Salgados':'sf','Salgados Especiais':'se','Tortas Salgadas':'ts','Baguetes':'bag',
@@ -296,15 +358,21 @@ async function carregarCardapio() {
         ...cat,
         grupos: cat.grupos.map(grupo => ({
           ...grupo,
-          itens: grupo.itens.map((item, i) => {
-            const prefixo = PREFIXOS[grupo.aba] || slugify(cat.key);
-            const id = prefixo + (i + 1);
+          itens: grupo.itens.map(item => {
+            const prefixo = PREFIXOS_ABA[grupo.aba] || slugify(cat.key);
+            // CORREÇÃO 2: ID por nome, não por posição
+            const id = resolverId(item.n, prefixo);
             return { id, n:item.n, p:item.p, u:item.u||'', recheio:item.recheio||'', cobertura:item.cobertura||'' };
           })
         }))
       }));
     }
-    if (jFotos.fotos) fotos = { ...fotos, ...jFotos.fotos };
+    // CORREÇÃO 3: merge que respeita deleções (value null/vazio = apaga)
+    if (jFotos.fotos) {
+      Object.entries(jFotos.fotos).forEach(([k, v]) => {
+        if (v) fotos[k] = v; else delete fotos[k];
+      });
+    }
     renderNav();
     renderContent();
   } catch(e) {
@@ -477,7 +545,6 @@ function updCart() {
 
 function enviar() {
   if (!carrinho.length) return;
-  // Mensagem de abertura limpa, sem keyword
   const msgInicio = getMsgInicio();
   let msg = `${msgInicio}\n\n🍰 *Meu pedido:*\n\n`;
   carrinho.forEach(i => {
@@ -488,7 +555,6 @@ function enviar() {
   });
   const tot = carrinho.reduce((s,i) => s+i.p*i.qty, 0);
   msg += `\n*Total estimado: ${fmt(tot)}*\n\nAguardo confirmação! 😊`;
-
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
     event: 'clique_whatsapp',
@@ -498,7 +564,6 @@ function enviar() {
     qtd_itens: carrinho.reduce((s,i) => s+i.qty, 0),
     currency: 'BRL'
   });
-
   window.open(`https://wa.me/${WPP}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
