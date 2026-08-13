@@ -457,17 +457,50 @@ const PREFIXOS_ABA = {
   'Salgados':'sf','Salgados Especiais':'se','Tortas Salgadas':'ts','Baguetes':'bag',
 };
 
-// Timeout via Promise.race (sem AbortController/AbortSignal): alguns
-// ambientes que fazem proxy do fetch via postMessage (ex: preview de
-// artifacts) não conseguem clonar um AbortSignal e quebram com
-// DataCloneError. Promise.race não depende de cancelar o fetch de fato,
-// só de parar de esperar por ele — suficiente pro nosso caso e portátil
-// em qualquer ambiente.
-function fetchComTimeout(url, ms) {
-  const timeout = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error('timeout')), ms);
+// ── JSONP em vez de fetch() ──
+// fetch() com o redirecionamento interno do Apps Script
+// (script.google.com -> script.googleusercontent.com) é instável dentro
+// de WebViews de apps (WhatsApp, Instagram, Facebook) — é exatamente o
+// navegador que abre quando alguém clica no link do cardápio a partir de
+// um anúncio ou de uma conversa. Carregar via tag <script> não tem essa
+// limitação: é carregamento de recurso comum, suportado de forma idêntica
+// em qualquer navegador ou WebView, sem CORS envolvido.
+function jsonpFetch(url, timeoutMs) {
+  return new Promise((resolve, reject) => {
+    const callbackName = 'jsonpCb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+    const script = document.createElement('script');
+    let done = false;
+
+    const limpar = () => {
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      clearTimeout(timer);
+    };
+
+    window[callbackName] = (data) => {
+      if (done) return;
+      done = true;
+      limpar();
+      resolve(data);
+    };
+
+    const timer = setTimeout(() => {
+      if (done) return;
+      done = true;
+      limpar();
+      reject(new Error('timeout'));
+    }, timeoutMs);
+
+    script.onerror = () => {
+      if (done) return;
+      done = true;
+      limpar();
+      reject(new Error('script load error'));
+    };
+
+    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + callbackName;
+    document.head.appendChild(script);
   });
-  return Promise.race([fetch(url), timeout]);
 }
 
 // ── CORREÇÃO: 1 fetch (listarTudo) em vez de 2 em paralelo ──
@@ -477,8 +510,7 @@ function fetchComTimeout(url, ms) {
 async function carregarCardapio(tentativa) {
   tentativa = tentativa || 1;
   try {
-    const r = await fetchComTimeout(SCRIPT_URL + '?acao=listarTudo', FETCH_TIMEOUT_MS);
-    const j = await r.json();
+    const j = await jsonpFetch(SCRIPT_URL + '?acao=listarTudo', FETCH_TIMEOUT_MS);
 
     if (j.cats && j.cats.length) {
       CATS = j.cats.map(cat => ({
