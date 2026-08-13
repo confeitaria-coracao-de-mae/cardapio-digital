@@ -10,6 +10,10 @@ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-56P6VVB3');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://drive.google.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -129,6 +133,12 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 .wpp-float:hover{transform:scale(1.08);box-shadow:0 6px 22px rgba(37,211,102,0.55)}
 @keyframes pulse-wpp{0%,100%{box-shadow:0 4px 16px rgba(37,211,102,0.45)}50%{box-shadow:0 4px 28px rgba(37,211,102,0.75)}}
 .cart.vis ~ .wpp-float{bottom:90px}
+.errbox{text-align:center;padding:50px 24px}
+.errbox .ei{font-size:40px;margin-bottom:14px}
+.errbox h3{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:8px;color:var(--tx)}
+.errbox p{font-size:13px;color:var(--tx3);margin-bottom:20px;line-height:1.5}
+.errbox button{background:var(--red);color:white;border:none;border-radius:10px;padding:12px 22px;font-family:'Lato',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-right:8px}
+.errbox a.errwpp{display:inline-block;background:#25D366;color:white;border-radius:10px;padding:12px 22px;font-family:'Lato',sans-serif;font-size:14px;font-weight:700;text-decoration:none}
 </style>
 </head>
 <body>
@@ -223,8 +233,8 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLrgMes-S3ITuprcvBeCziDJtZE7P2ExGztOHIcF3wgr2uEPCq5dusaEK8LYiJoA/exec';
 const WPP = '554133273140';
 const SENHA = 'cdm2026';
+const FETCH_TIMEOUT_MS = 10000;
 
-// ── Mensagens por UTM ──
 const UTM_MSG_MAP = {
   'google_maps': 'Olá, vim pelo Google Maps e gostaria de fazer um orçamento',
   'instagram':   'Olá, vim pelo Instagram e gostaria de fazer um orçamento',
@@ -244,9 +254,6 @@ function buildWppUrl(msgExtra) {
   return `https://wa.me/${WPP}?text=${encodeURIComponent(texto)}`;
 }
 
-// ── CORREÇÃO 1: fotos 100% do Sheets, sem hardcode ──
-// Fonte única de verdade: aba "Fotos" na planilha.
-// Apagar pelo painel admin remove do Sheets e some do cardápio.
 let fotos = {};
 
 let admin = false;
@@ -259,83 +266,188 @@ let phTyp = null;
 let logoClicks = 0;
 let logoTimer = null;
 
-// ── CORREÇÃO 2: IDs fixos por nome — não deslocam ao adicionar produtos ──
-// Espelho exato do NOMES_PRODUTOS no Apps Script.
-// Se adicionar produto novo na planilha: adicione aqui também com um ID novo (ex: b29).
+// ── CORREÇÃO: dicionário de IDs agora é namespaced por aba ──
+// Antes era um único objeto plano: nomes iguais em abas diferentes
+// (ex: "Dois Amores" existe em Bolos E em Doces Tradicionais; o mesmo
+// vale para "Abacaxi") faziam a segunda definição sobrescrever a
+// primeira silenciosamente. Isso quebrava foto e identidade de carrinho
+// de 2 produtos reais. Agora cada aba tem seu próprio mapa e não há
+// mais colisão possível entre categorias diferentes.
 const NOME_PARA_ID = {
-  // Bolos Tradicionais
-  'ouro branco':'b1','ouro branco com morango':'b2','sonho de valsa':'b3',
-  'sonho de valsa com morango':'b4','martha rocha com ameixa':'b5','martha rocha com damasco':'b6',
-  'fantastico':'b7','floresta negra':'b8','4 leites com morango':'b9','coracao de mae':'b10',
-  'dois amores':'b11','dois amores com morango':'b12','napolitano':'b13',
-  'morango com suspiro':'b14','morango':'b15','4 leites':'b16','frutas':'b17',
-  'abacaxi com cocada':'b18','ayrton senna':'b19','abacaxi':'b20','prestigio preto':'b21',
-  'prestigio branco':'b22','tropical':'b23','sensacao':'b24','ninho com abacaxi':'b25',
-  'xuxa cereja':'b26','xuxa uva':'b27','xuxa morango':'b28',
-  // Bolos Especiais
-  'strogonoff de nozes':'be1','ferrero rocher':'be2',
-  // Bolos Gourmet
-  '4 leite e morango':'bg1','trufado de chocolate com maracuja':'bg2','nega maluca com 4 leite':'bg3',
-  '4 leites com nutella':'bg4','4 leites com nutella e morango':'bg5',
-  'nega maluca com ninho e morango':'bg6','red velvet':'bg7',
-  'brigadeiro trufado de chocolate':'bg8','trufado de pacoca com chocolate':'bg9',
-  // Tortas Doces
-  'torta de limao':'td1','torta de maracuja':'td2','torta alema':'td3','torta holandesa':'td4',
-  'torta banoffee':'td5','torta morangoffe':'td6','torta de requeijao':'td7',
-  'torta requeijao com goiabada':'td8','cheesecake de frutas vermelhas':'td9','cheesecake de morango':'td10',
-  // Bolos Simples
-  'cenoura':'bs1','cuque de farofa':'bs2','cuque com banana':'bs3','nega maluca':'bs4',
-  'nega maluca recheada':'bs5','formigueiro':'bs6','fuba':'bs7','fuba com goiabada':'bs8',
-  'toalha felpuda':'bs9','toalha felpuda recheada':'bs10','laranja':'bs11','marmore':'bs12',
-  // Doces Especiais
-  'bombom de nozes':'de1','camafeu':'de2','espelhados uva/morango':'de3',
-  'espelhados nozes/damasco/cereja':'de4','glacados morango/uva':'de5','glacados damasco/cereja':'de6',
-  'mousse tacinha limao/maracuja/brigadeiro':'de7','mini tortinhas maracuja':'de8',
-  'mini tortinhas kiwi':'de9','folhados romeu e julieta':'de10','bombon abacaxi/cereja':'de11',
-  'bombon uva/morango':'de12','leite ninho e nutella':'de13','surpresa de uva/morango':'de14',
-  'bicho de pe':'de15','folhado de banana/maca':'de16','carolina creme':'de17',
-  'carolina chocolate branco/preto':'de18','carolina doce de leite':'de19',
-  'mini croissant de chocolate':'de20','mini tortinhas de limao':'de21',
-  'mini tortinhas de morango':'de22','mini tortinhas de nozes':'de23',
-  'mini tortinhas de chocolate':'de24','conchinhas de morango':'de25','ourico':'de26',
-  // Doces Tradicionais
-  'brigadeiro preto':'dt1','brigadeiro branco':'dt2','beijinho':'dt3','dois amores':'dt4',
-  'quindim':'dt5','abacaxi':'dt6','cajuzinho':'dt7','olho de sogra':'dt8','leite ninho':'dt9',
-  // Salgados Fritos
-  'bolinha de queijo':'sf1','coxinha':'sf2','croquete de frango':'sf3','kibe':'sf4',
-  'pastel de vento (carne ou queijo)':'sf5','risoles (carne ou frios)':'sf6','risoles de palmito':'sf7',
-  // Mini Pizzas
-  'mini pizza tomate seco':'sm1','mini pizza frios':'sm2','mini pizza frango com catupiry':'sm3',
-  // Salgados Especiais
-  'canapes frango/atum':'se1','mini sanduiche de frios':'se2','mini sanduiche de frango':'se3',
-  'mini sanduiche de peito de peru':'se4','barquete / salpicao / tropical':'se5',
-  'folhado de camarao':'se6','carolina de frango':'se7','carolina de ricota':'se8',
-  'carolina de atum':'se9','quiche de champignon':'se10','quiche de queijo e presunto':'se11',
-  'quiche de espinafre':'se12','quiche de queijo':'se13','quiche de alho poro':'se14',
-  'quiche de bacon':'se15',
-  // Tortas Salgadas
-  'torta quiche sabores':'ts1','empadao de camarao':'ts2','empadao de frango':'ts3',
-  'empadao de frango c/ catupiry':'ts4','empadao de palmito':'ts5','empadao misto':'ts6',
-  'torta de legumes c/ nata':'ts7','torta de frango c/ nata':'ts8','torta mista c/ nata':'ts9',
-  'torta de palmito c/ nata':'ts10','torta de legumes':'ts11',
-  // Baguetes
-  'peru':'bag1','lombinho':'bag2','frios':'bag3','frango':'bag4','atum':'bag5',
+  'Bolos': {
+    'ouro branco': 'b1',
+    'ouro branco com morango': 'b2',
+    'sonho de valsa': 'b3',
+    'sonho de valsa com morango': 'b4',
+    'martha rocha com ameixa': 'b5',
+    'martha rocha com damasco': 'b6',
+    'fantastico': 'b7',
+    'floresta negra': 'b8',
+    '4 leites com morango': 'b9',
+    'coracao de mae': 'b10',
+    'dois amores': 'b11',
+    'dois amores com morango': 'b12',
+    'napolitano': 'b13',
+    'morango com suspiro': 'b14',
+    'morango': 'b15',
+    '4 leites': 'b16',
+    'frutas': 'b17',
+    'abacaxi com cocada': 'b18',
+    'ayrton senna': 'b19',
+    'abacaxi': 'b20',
+    'prestigio preto': 'b21',
+    'prestigio branco': 'b22',
+    'tropical': 'b23',
+    'sensacao': 'b24',
+    'ninho com abacaxi': 'b25',
+    'xuxa cereja': 'b26',
+    'xuxa uva': 'b27',
+    'xuxa morango': 'b28',
+  },
+  'Bolos Especiais': {
+    'strogonoff de nozes': 'be1',
+    'ferrero rocher': 'be2',
+  },
+  'Bolos Gourmet': {
+    '4 leite e morango': 'bg1',
+    'trufado de chocolate com maracuja': 'bg2',
+    'nega maluca com 4 leite': 'bg3',
+    '4 leites com nutella': 'bg4',
+    '4 leites com nutella e morango': 'bg5',
+    'nega maluca com ninho e morango': 'bg6',
+    'red velvet': 'bg7',
+    'brigadeiro trufado de chocolate': 'bg8',
+    'trufado de pacoca com chocolate': 'bg9',
+  },
+  'Tortas Doces': {
+    'torta de limao': 'td1',
+    'torta de maracuja': 'td2',
+    'torta alema': 'td3',
+    'torta holandesa': 'td4',
+    'torta banoffee': 'td5',
+    'torta morangoffe': 'td6',
+    'torta de requeijao': 'td7',
+    'torta requeijao com goiabada': 'td8',
+    'cheesecake de frutas vermelhas': 'td9',
+    'cheesecake de morango': 'td10',
+  },
+  'Bolos Simples': {
+    'cenoura': 'bs1',
+    'cuque de farofa': 'bs2',
+    'cuque com banana': 'bs3',
+    'nega maluca': 'bs4',
+    'nega maluca recheada': 'bs5',
+    'formigueiro': 'bs6',
+    'fuba': 'bs7',
+    'fuba com goiabada': 'bs8',
+    'toalha felpuda': 'bs9',
+    'toalha felpuda recheada': 'bs10',
+    'laranja': 'bs11',
+    'marmore': 'bs12',
+  },
+  'Doces Especiais': {
+    'bombom de nozes': 'de1',
+    'camafeu': 'de2',
+    'espelhados uva/morango': 'de3',
+    'espelhados nozes/damasco/cereja': 'de4',
+    'glacados morango/uva': 'de5',
+    'glacados damasco/cereja': 'de6',
+    'mousse tacinha limao/maracuja/brigadeiro': 'de7',
+    'mini tortinhas maracuja': 'de8',
+    'mini tortinhas kiwi': 'de9',
+    'folhados romeu e julieta': 'de10',
+    'bombon abacaxi/cereja': 'de11',
+    'bombon uva/morango': 'de12',
+    'leite ninho e nutella': 'de13',
+    'surpresa de uva/morango': 'de14',
+    'bicho de pe': 'de15',
+    'folhado de banana/maca': 'de16',
+    'carolina creme': 'de17',
+    'carolina chocolate branco/preto': 'de18',
+    'carolina doce de leite': 'de19',
+    'mini croissant de chocolate': 'de20',
+    'mini tortinhas de limao': 'de21',
+    'mini tortinhas de morango': 'de22',
+    'mini tortinhas de nozes': 'de23',
+    'mini tortinhas de chocolate': 'de24',
+    'conchinhas de morango': 'de25',
+    'ourico': 'de26',
+  },
+  'Doces Tradicionais': {
+    'brigadeiro preto': 'dt1',
+    'brigadeiro branco': 'dt2',
+    'beijinho': 'dt3',
+    'dois amores': 'dt4',
+    'quindim': 'dt5',
+    'abacaxi': 'dt6',
+    'cajuzinho': 'dt7',
+    'olho de sogra': 'dt8',
+    'leite ninho': 'dt9',
+  },
+  'Salgados': {
+    'bolinha de queijo': 'sf1',
+    'coxinha': 'sf2',
+    'croquete de frango': 'sf3',
+    'kibe': 'sf4',
+    'pastel de vento (carne ou queijo)': 'sf5',
+    'risoles (carne ou frios)': 'sf6',
+    'risoles de palmito': 'sf7',
+    'mini pizza tomate seco': 'sm1',
+    'mini pizza frios': 'sm2',
+    'mini pizza frango com catupiry': 'sm3',
+  },
+  'Salgados Especiais': {
+    'canapes frango/atum': 'se1',
+    'mini sanduiche de frios': 'se2',
+    'mini sanduiche de frango': 'se3',
+    'mini sanduiche de peito de peru': 'se4',
+    'barquete / salpicao / tropical': 'se5',
+    'folhado de camarao': 'se6',
+    'carolina de frango': 'se7',
+    'carolina de ricota': 'se8',
+    'carolina de atum': 'se9',
+    'quiche de champignon': 'se10',
+    'quiche de queijo e presunto': 'se11',
+    'quiche de espinafre': 'se12',
+    'quiche de queijo': 'se13',
+    'quiche de alho poro': 'se14',
+    'quiche de bacon': 'se15',
+  },
+  'Tortas Salgadas': {
+    'torta quiche sabores': 'ts1',
+    'empadao de camarao': 'ts2',
+    'empadao de frango': 'ts3',
+    'empadao de frango c/ catupiry': 'ts4',
+    'empadao de palmito': 'ts5',
+    'empadao misto': 'ts6',
+    'torta de legumes c/ nata': 'ts7',
+    'torta de frango c/ nata': 'ts8',
+    'torta mista c/ nata': 'ts9',
+    'torta de palmito c/ nata': 'ts10',
+    'torta de legumes': 'ts11',
+  },
+  'Baguetes': {
+    'peru': 'bag1',
+    'lombinho': 'bag2',
+    'frios': 'bag3',
+    'frango': 'bag4',
+    'atum': 'bag5',
+  },
 };
 
-// Contadores para produtos novos ainda não mapeados
 const _contadoresNovos = {};
 
-function resolverId(nomeOriginal, prefixoFallback) {
-  // Normaliza: minúsculas, remove acentos, mantém / e ()
+// ── CORREÇÃO: agora recebe a aba e busca só dentro do mapa daquela aba ──
+function resolverId(nomeOriginal, aba, prefixoFallback) {
   const norm = nomeOriginal.toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9/ ()]/g, ' ')
     .replace(/\s+/g, ' ').trim();
-  if (NOME_PARA_ID[norm]) return NOME_PARA_ID[norm];
-  // Produto novo: gera ID temporário e avisa no console
+  const mapaAba = NOME_PARA_ID[aba];
+  if (mapaAba && mapaAba[norm]) return mapaAba[norm];
   _contadoresNovos[prefixoFallback] = (_contadoresNovos[prefixoFallback] || 0) + 1;
   const novoId = prefixoFallback + '_novo' + _contadoresNovos[prefixoFallback];
-  console.warn(`[Cardápio] Produto sem ID fixo: "${nomeOriginal}" → ${novoId}. Adicione ao NOME_PARA_ID e ao Apps Script.`);
+  console.warn(`[Cardápio] Produto sem ID fixo: "${nomeOriginal}" (aba: ${aba}) → ${novoId}. Adicione ao NOME_PARA_ID["${aba}"] e ao Apps Script.`);
   return novoId;
 }
 
@@ -345,41 +457,71 @@ const PREFIXOS_ABA = {
   'Salgados':'sf','Salgados Especiais':'se','Tortas Salgadas':'ts','Baguetes':'bag',
 };
 
-async function carregarCardapio() {
+// Timeout via Promise.race (sem AbortController/AbortSignal): alguns
+// ambientes que fazem proxy do fetch via postMessage (ex: preview de
+// artifacts) não conseguem clonar um AbortSignal e quebram com
+// DataCloneError. Promise.race não depende de cancelar o fetch de fato,
+// só de parar de esperar por ele — suficiente pro nosso caso e portátil
+// em qualquer ambiente.
+function fetchComTimeout(url, ms) {
+  const timeout = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('timeout')), ms);
+  });
+  return Promise.race([fetch(url), timeout]);
+}
+
+// ── CORREÇÃO: 1 fetch (listarTudo) em vez de 2 em paralelo ──
+// + timeout explícito + 1 retentativa automática + estado de erro visível
+// (antes, se o fetch falhasse, CATS ficava [] pra sempre e a tela
+// travava em "Carregando cardápio..." sem nenhum aviso pro cliente)
+async function carregarCardapio(tentativa) {
+  tentativa = tentativa || 1;
   try {
-    const [rCat, rFotos] = await Promise.all([
-      fetch(SCRIPT_URL + '?acao=listarCardapio'),
-      fetch(SCRIPT_URL + '?acao=listarFotos')
-    ]);
-    const jCat   = await rCat.json();
-    const jFotos = await rFotos.json();
-    if (jCat.cats && jCat.cats.length) {
-      CATS = jCat.cats.map(cat => ({
+    const r = await fetchComTimeout(SCRIPT_URL + '?acao=listarTudo', FETCH_TIMEOUT_MS);
+    const j = await r.json();
+
+    if (j.cats && j.cats.length) {
+      CATS = j.cats.map(cat => ({
         ...cat,
         grupos: cat.grupos.map(grupo => ({
           ...grupo,
           itens: grupo.itens.map(item => {
             const prefixo = PREFIXOS_ABA[grupo.aba] || slugify(cat.key);
-            // CORREÇÃO 2: ID por nome, não por posição
-            const id = resolverId(item.n, prefixo);
+            const id = resolverId(item.n, grupo.aba, prefixo);
             return { id, n:item.n, p:item.p, u:item.u||'', recheio:item.recheio||'', cobertura:item.cobertura||'' };
           })
         }))
       }));
     }
-    // CORREÇÃO 3: merge que respeita deleções (value null/vazio = apaga)
-    if (jFotos.fotos) {
-      Object.entries(jFotos.fotos).forEach(([k, v]) => {
+    if (j.fotos) {
+      Object.entries(j.fotos).forEach(([k, v]) => {
         if (v) fotos[k] = v; else delete fotos[k];
       });
     }
+
+    if (!CATS.length) throw new Error('Cardápio veio vazio');
+
     renderNav();
     renderContent();
   } catch(e) {
-    console.warn('Erro ao carregar cardápio:', e);
-    renderNav();
-    renderContent();
+    console.warn('Erro ao carregar cardápio (tentativa ' + tentativa + '):', e);
+    if (tentativa < 2) {
+      setTimeout(() => carregarCardapio(tentativa + 1), 1500);
+      return;
+    }
+    mostrarErroCarregamento();
   }
+}
+
+function mostrarErroCarregamento() {
+  document.getElementById('content').innerHTML = `
+    <div class="errbox">
+      <div class="ei">🎂</div>
+      <h3>Não conseguimos carregar o cardápio agora</h3>
+      <p>Pode ser sua conexão ou instabilidade momentânea. Você pode tentar de novo ou já chamar no WhatsApp que a gente monta seu pedido por lá.</p>
+      <button onclick="location.reload()">Tentar novamente</button>
+      <a class="errwpp" href="${buildWppUrl()}" target="_blank">Chamar no WhatsApp</a>
+    </div>`;
 }
 
 function slugify(str) {
@@ -456,7 +598,7 @@ function cardH(p, icon) {
   const cardDesc = p.recheio || '';
   return `<div class="card" onclick="abrirProd('${p.id}')">
     <div class="cimg">
-      ${foto?`<img src="${foto}" alt="${p.n}" onerror="this.style.display='none'">`:`<span class="noph">${icon}</span>`}
+      ${foto?`<img src="${foto}" alt="${p.n}" loading="lazy" decoding="async" onerror="this.style.display='none'">`:`<span class="noph">${icon}</span>`}
       <div class="cedit" onclick="event.stopPropagation();abrirPh('prod','${p.id}','Foto — ${p.n.replace(/'/g,"\\'")}','Cole a URL da imagem')"><span>📷</span>Foto</div>
     </div>
     <div class="cbody">
