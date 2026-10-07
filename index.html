@@ -19,33 +19,38 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--red:#E8191A;--rdk:#B01010;--rlt:#FDF0F0;--blk:#1A0A0A;--wht:#FFFFFF;--g1:#F7F2F2;--g2:#EDE5E5;--tx:#1A0A0A;--tx2:#5A3A3A;--tx3:#9A7A7A}
 body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
-.hero{background:var(--red);padding:30px 20px 22px;position:relative;overflow:hidden;text-align:center}
+.hero{background:var(--red);padding:16px 20px 14px;position:relative;overflow:hidden;text-align:center}
 .hero::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.04) 0,rgba(255,255,255,0.04) 1px,transparent 0,transparent 50%);background-size:20px 20px}
-.logo{width:86px;height:86px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;margin:0 auto 11px;position:relative;z-index:1;border:3px solid rgba(255,255,255,0.22);overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.hn{font-family:'Playfair Display',serif;font-size:27px;font-weight:700;color:white;position:relative;z-index:1}
+.logo{width:62px;height:62px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;margin:0 auto 7px;position:relative;z-index:1;border:3px solid rgba(255,255,255,0.22);overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hn{font-family:'Playfair Display',serif;font-size:23px;font-weight:700;color:white;position:relative;z-index:1}
 .hs{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-top:4px;position:relative;z-index:1}
-.ht{font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px;font-style:italic;position:relative;z-index:1}
+.ht{font-size:11px;color:rgba(255,255,255,0.5);margin-top:3px;font-style:italic;position:relative;z-index:1}
 .admin-badge{position:fixed;top:10px;right:10px;z-index:500;background:var(--red);color:white;border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;letter-spacing:1px;display:none;cursor:pointer}
 .admin-mode .admin-badge{display:block}
 .nav{background:var(--blk);position:sticky;top:0;z-index:100;padding:10px 12px 8px}
-.navrow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.navrow{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.navrow::-webkit-scrollbar{display:none}
+.navrow .nb{flex:0 0 auto;min-width:74px;scroll-snap-align:start}
 .nb{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.55);border:1.5px solid transparent;border-radius:10px;padding:8px 4px 7px;font-family:'Lato',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:4px;line-height:1.2}
 .nb .ni{font-size:20px;line-height:1}
 .nb:hover{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.85)}
 .nb.on{background:var(--red);color:white;border-color:var(--rdk);box-shadow:0 2px 8px rgba(232,25,26,0.4)}
 @media(max-width:480px){
-  .navrow{grid-template-columns:repeat(4,1fr)}
-  .nb{font-size:9px;padding:7px 3px 6px}
+  .nb{font-size:9px;padding:7px 6px 6px}
   .nb .ni{font-size:18px}
 }
+.aviso48{background:var(--blk);color:white;text-align:center;font-size:12px;padding:8px 14px;letter-spacing:.3px}
+.aviso48 b{color:#FFD5D5}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);background:#1A0A0A;color:white;padding:10px 18px;border-radius:24px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:all .25s;z-index:400;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .sec{padding-bottom:80px}
-.covhdr{position:relative;height:150px;overflow:hidden;display:flex;align-items:flex-end}
+.covhdr{position:relative;height:96px;overflow:hidden;display:flex;align-items:flex-end}
 .covbg{position:absolute;inset:0;background:var(--red);display:flex;align-items:center;justify-content:center}
 .covbg img{width:100%;height:100%;object-fit:cover;opacity:.4}
 .covbg .noc{font-size:60px;opacity:.18}
 .covol{position:absolute;inset:0;background:linear-gradient(to top,rgba(232,25,26,.93) 0%,rgba(232,25,26,.25) 100%)}
 .covinfo{position:relative;z-index:2;padding:14px 18px;width:100%;display:flex;align-items:flex-end;justify-content:space-between}
-.covtitle{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white}
+.covtitle{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:white}
 .covsub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:2px}
 .btncov{background:rgba(0,0,0,.38);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;display:none}
 .admin-mode .btncov{display:block}
@@ -132,7 +137,7 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 .wpp-float{position:fixed;bottom:80px;right:18px;z-index:299;width:54px;height:54px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,0.45);cursor:pointer;text-decoration:none;transition:transform .2s, box-shadow .2s;animation:pulse-wpp 2.5s infinite}
 .wpp-float:hover{transform:scale(1.08);box-shadow:0 6px 22px rgba(37,211,102,0.55)}
 @keyframes pulse-wpp{0%,100%{box-shadow:0 4px 16px rgba(37,211,102,0.45)}50%{box-shadow:0 4px 28px rgba(37,211,102,0.75)}}
-.cart.vis ~ .wpp-float{bottom:90px}
+.cart.vis ~ .wpp-float{display:none}
 .errbox{text-align:center;padding:50px 24px}
 .errbox .ei{font-size:40px;margin-bottom:14px}
 .errbox h3{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:8px;color:var(--tx)}
@@ -158,9 +163,11 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
   <div class="hs">Confeitaria &amp; Panificadora</div>
   <div class="ht">O sabor da felicidade · Curitiba, PR</div>
 </div>
+<div class="aviso48">🎂 Encomendas com <b>48h de antecedência</b> · Delivery em Curitiba e região</div>
 
 <div class="nav"><div class="navrow" id="navrow"></div></div>
 <div id="content"></div>
+<div class="toast" id="toast">Adicionado ao pedido ✓</div>
 
 <div class="cart" id="cart">
   <div><div class="ccnt" id="ccnt">0 ITENS</div><div class="ctot" id="ctot">R$ 0,00</div></div>
@@ -232,7 +239,10 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLrgMes-S3ITuprcvBeCziDJtZE7P2ExGztOHIcF3wgr2uEPCq5dusaEK8LYiJoA/exec';
 const WPP = '554133273140';
-const SENHA = 'cdm2026';
+// Senha nao fica mais em texto puro: comparamos o hash SHA-256.
+// A protecao real e o Apps Script validar a senha enviada em salvarFoto (ver instrucoes).
+const SENHA_HASH = 'facdb5019fc58f1c28ff787d24015af4ea6656d0bb612703f431ce8d62a4f9ad';
+let senhaSessao = '';
 const FETCH_TIMEOUT_MS = 10000;
 
 const UTM_MSG_MAP = {
@@ -255,6 +265,31 @@ function buildWppUrl(msgExtra) {
 }
 
 let fotos = {};
+
+// ===== Rastreamento (GTM / dataLayer) =====
+window.dataLayer = window.dataLayer || [];
+const T0 = (window.performance && performance.now) ? performance.now() : 0;
+function dl(evento, dados) {
+  try { window.dataLayer.push(Object.assign({ event: evento, utm_source: getUtmSource() || 'direto' }, dados || {})); } catch(e) {}
+}
+function trackWpp(origem, valor, qtd) {
+  dl('clique_whatsapp', { origem_clique: origem, valor_carrinho: valor, value: valor, qtd_itens: qtd, currency: 'BRL' });
+}
+let toastTimer = null;
+function toast(txt) {
+  const t = document.getElementById('toast'); if (!t) return;
+  t.textContent = txt; t.classList.add('on');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 1600);
+}
+
+// ===== Cache local do cardapio (abre na hora; atualiza por tras) =====
+const CACHE_KEY = 'cdm_cardapio_v1';
+function lerCache() {
+  try { const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); return (c && c.cats && c.cats.length) ? c : null; } catch(e) { return null; }
+}
+function gravarCache(j) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ cats: j.cats, fotos: j.fotos || {}, t: Date.now() })); } catch(e) {}
+}
 
 let admin = false;
 let catAtiva = 'bolos';
@@ -507,40 +542,65 @@ function jsonpFetch(url, timeoutMs) {
 // + timeout explícito + 1 retentativa automática + estado de erro visível
 // (antes, se o fetch falhasse, CATS ficava [] pra sempre e a tela
 // travava em "Carregando cardápio..." sem nenhum aviso pro cliente)
+let veioDoCache = false;
+let carregadoTrackeado = false;
+
+function aplicarDados(j) {
+  if (j.cats && j.cats.length) {
+    CATS = j.cats.map(cat => ({
+      ...cat,
+      grupos: cat.grupos.map(grupo => ({
+        ...grupo,
+        itens: grupo.itens.map(item => {
+          const prefixo = PREFIXOS_ABA[grupo.aba] || slugify(cat.key);
+          const id = resolverId(item.n, grupo.aba, prefixo);
+          return { id, n:item.n, p:item.p, u:item.u||'', recheio:item.recheio||'', cobertura:item.cobertura||'' };
+        })
+      }))
+    }));
+  }
+  if (j.fotos) {
+    Object.entries(j.fotos).forEach(([k, v]) => {
+      if (v) fotos[k] = v; else delete fotos[k];
+    });
+  }
+  aplicarCatDaUrl();
+}
+
+function marcarCarregado(fonte) {
+  if (carregadoTrackeado) return;
+  carregadoTrackeado = true;
+  const ms = (window.performance && performance.now) ? Math.round(performance.now() - T0) : 0;
+  dl('cardapio_carregado', { fonte: fonte, tempo_ms: ms });
+}
+
 async function carregarCardapio(tentativa) {
   tentativa = tentativa || 1;
+  if (tentativa === 1) {
+    const c = lerCache();
+    if (c) {
+      try { aplicarDados(c); if (CATS.length) { veioDoCache = true; renderNav(); renderContent(); marcarCarregado('cache'); } } catch(e) {}
+    }
+  }
   try {
     const j = await jsonpFetch(SCRIPT_URL + '?acao=listarTudo', FETCH_TIMEOUT_MS);
 
-    if (j.cats && j.cats.length) {
-      CATS = j.cats.map(cat => ({
-        ...cat,
-        grupos: cat.grupos.map(grupo => ({
-          ...grupo,
-          itens: grupo.itens.map(item => {
-            const prefixo = PREFIXOS_ABA[grupo.aba] || slugify(cat.key);
-            const id = resolverId(item.n, grupo.aba, prefixo);
-            return { id, n:item.n, p:item.p, u:item.u||'', recheio:item.recheio||'', cobertura:item.cobertura||'' };
-          })
-        }))
-      }));
-    }
-    if (j.fotos) {
-      Object.entries(j.fotos).forEach(([k, v]) => {
-        if (v) fotos[k] = v; else delete fotos[k];
-      });
-    }
-
+    aplicarDados(j);
     if (!CATS.length) throw new Error('Cardápio veio vazio');
+    gravarCache(j);
 
-    renderNav();
-    renderContent();
+    // So redesenha se nao veio do cache ou se nenhum modal esta aberto (nao atrapalha quem ja esta navegando)
+    const modalAberto = document.getElementById('ov').classList.contains('open');
+    if (!veioDoCache || !modalAberto) { renderNav(); renderContent(); }
+    marcarCarregado('rede');
   } catch(e) {
     console.warn('Erro ao carregar cardápio (tentativa ' + tentativa + '):', e);
+    if (veioDoCache) return; // cliente ja esta vendo o cardapio do cache
     if (tentativa < 2) {
       setTimeout(() => carregarCardapio(tentativa + 1), 1500);
       return;
     }
+    dl('cardapio_erro', { erro: String(e && e.message || e).slice(0,80) });
     mostrarErroCarregamento();
   }
 }
@@ -552,8 +612,18 @@ function mostrarErroCarregamento() {
       <h3>Não conseguimos carregar o cardápio agora</h3>
       <p>Pode ser sua conexão ou instabilidade momentânea. Você pode tentar de novo ou já chamar no WhatsApp que a gente monta seu pedido por lá.</p>
       <button onclick="location.reload()">Tentar novamente</button>
-      <a class="errwpp" href="${buildWppUrl()}" target="_blank">Chamar no WhatsApp</a>
+      <a class="errwpp" href="${buildWppUrl()}" target="_blank" onclick="trackWpp('erro_carregamento',0,0)">Chamar no WhatsApp</a>
     </div>`;
+}
+
+let catDaUrlAplicada = false;
+function aplicarCatDaUrl() {
+  if (catDaUrlAplicada || !CATS.length) return;
+  catDaUrlAplicada = true;
+  const q = (new URLSearchParams(window.location.search).get('cat') || '').toLowerCase().trim();
+  if (!q) return;
+  const alvo = CATS.find(c => c.key.toLowerCase() === q || slugify(c.label) === slugify(q));
+  if (alvo) catAtiva = alvo.key;
 }
 
 function slugify(str) {
@@ -581,9 +651,17 @@ function abrirSenha() {
 
 function fechaSenha() { document.getElementById('senhaov').classList.remove('open'); }
 
-function verificaSenha() {
+async function sha256(txt) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function verificaSenha() {
   const inp = document.getElementById('senhainp');
-  if (inp.value === SENHA) {
+  let ok = false;
+  try { ok = (await sha256(inp.value)) === SENHA_HASH; } catch(e) { ok = false; }
+  if (ok) {
+    senhaSessao = inp.value;
     fechaSenha(); admin = true;
     document.body.classList.add('admin-mode');
     renderContent();
@@ -598,7 +676,7 @@ function verificaSenha() {
 }
 
 function sairAdmin() {
-  admin = false;
+  admin = false; senhaSessao = '';
   document.body.classList.remove('admin-mode');
   renderContent();
 }
@@ -611,7 +689,7 @@ function renderNav() {
   ).join('');
 }
 
-function setCat(k) { catAtiva=k; renderNav(); renderContent(); document.querySelector('.nav').scrollIntoView({behavior:'smooth',block:'start'}); }
+function setCat(k) { catAtiva=k; dl('ver_categoria', { categoria: k }); renderNav(); renderContent(); document.querySelector('.nav').scrollIntoView({behavior:'smooth',block:'start'}); }
 
 function covHdr(cat) {
   const cov = gc(cat.key);
@@ -685,6 +763,7 @@ function abrirProd(id) {
     ? `<img src="${foto}" style="width:100%;height:100%;object-fit:cover"><div class="rbar"></div>`
     : `<span class="nophlg">${cat.icon}</span><div class="rbar"></div>`;
   document.getElementById('ov').classList.add('open');
+  dl('view_item', { item_id: p.id, item_name: p.n, categoria: cat.key, value: p.p, currency: 'BRL' });
 }
 
 function fechaProd(e) { if (!e || e.target===document.getElementById('ov')) document.getElementById('ov').classList.remove('open'); }
@@ -699,6 +778,8 @@ function addCart() {
   if (ex) ex.qty += qty; else carrinho.push({id:p.id,n:p.n,p:p.p,u:p.u||'',qty,obs});
   document.getElementById('ov').classList.remove('open');
   updCart();
+  toast(qty > 1 ? qty + 'x ' + p.n + ' no pedido ✓' : p.n + ' no pedido ✓');
+  dl('add_to_cart', { item_id: p.id, item_name: p.n, quantidade: qty, value: +(p.p*qty).toFixed(2), currency: 'BRL', origem_add: 'modal' });
 }
 
 function addD(id) {
@@ -707,6 +788,8 @@ function addD(id) {
   const ex = carrinho.find(i => i.id===id && !i.obs);
   if (ex) ex.qty++; else carrinho.push({id,n:p.n,p:p.p,u:p.u||'',qty:1,obs:''});
   updCart();
+  toast(p.n + ' no pedido ✓');
+  dl('add_to_cart', { item_id: id, item_name: p.n, quantidade: 1, value: +p.p.toFixed(2), currency: 'BRL', origem_add: 'botao_mais' });
 }
 
 function updCart() {
@@ -729,15 +812,7 @@ function enviar() {
   });
   const tot = carrinho.reduce((s,i) => s+i.p*i.qty, 0);
   msg += `\n*Total estimado: ${fmt(tot)}*\n\nAguardo confirmação! 😊`;
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
-    event: 'clique_whatsapp',
-    origem_clique: 'carrinho',
-    utm_source: getUtmSource() || 'direto',
-    valor_carrinho: parseFloat(tot.toFixed(2)),
-    qtd_itens: carrinho.reduce((s,i) => s+i.qty, 0),
-    currency: 'BRL'
-  });
+  trackWpp('carrinho', parseFloat(tot.toFixed(2)), carrinho.reduce((s,i) => s+i.qty, 0));
   window.open(`https://wa.me/${WPP}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
@@ -772,7 +847,7 @@ async function salvaFoto() {
   try {
     await fetch(SCRIPT_URL, {
       method: 'POST',
-      body: JSON.stringify({ acao: url ? 'salvarFoto' : 'apagarFoto', id: key, url })
+      body: JSON.stringify({ acao: url ? 'salvarFoto' : 'apagarFoto', id: key, url, senha: senhaSessao })
     });
     if (url) fotos[key] = url; else delete fotos[key];
     msg.textContent = '✓ Salvo! Aparece pra todos agora.';
@@ -793,15 +868,7 @@ carregarCardapio();
 
 function abrirWppFlutuante(e) {
   e.preventDefault();
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
-    event: 'clique_whatsapp',
-    origem_clique: 'botao_flutuante',
-    utm_source: getUtmSource() || 'direto',
-    valor_carrinho: 0,
-    qtd_itens: 0,
-    currency: 'BRL'
-  });
+  trackWpp('botao_flutuante', 0, 0);
   window.open(buildWppUrl(), '_blank');
 }
 </script>
