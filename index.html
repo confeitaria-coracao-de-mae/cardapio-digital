@@ -10,6 +10,115 @@ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-56P6VVB3');</script>
+<!-- Rastreio de vendas WhatsApp (adiciona o código do clique na mensagem) -->
+<script>
+/*
+  Rastreio WhatsApp: instale no site como Tag HTML personalizada no GTM (acionador: All Pages),
+  envolvendo este código em uma tag script. Ou cole no fim da página.
+
+  - Guarda gclid/gbraid/wbraid/fbclid/utm da URL de entrada por 30 dias.
+  - Pega qualquer abertura do WhatsApp: links <a href="wa.me/..."> e também window.open("https://wa.me/...")
+    (é assim que o cardápio abre no botão flutuante e no carrinho).
+  - Pede um código ao backend e adiciona "(cód. XXXXX)" no fim da mensagem antes de abrir.
+  - Se o backend demorar mais de 1,5 s ou falhar, abre o WhatsApp normal. O lead nunca se perde.
+
+  Escrito em ES5 para funcionar dentro do GTM. Configure as duas constantes abaixo.
+*/
+(function () {
+  if (window.__rastreioWhatsApp) return;
+  window.__rastreioWhatsApp = true;
+
+  var API = 'https://rastreio-whatsapp-production.up.railway.app/api/click';
+  var SLUG = 'coracao-de-mae';
+  var KEYS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  var STORE = 'rw_attr';
+  var TIMEOUT = 1500;
+
+  function load() { try { return JSON.parse(localStorage.getItem(STORE) || 'null'); } catch (e) { return null; } }
+  function save(v) { try { localStorage.setItem(STORE, JSON.stringify(v)); } catch (e) {} }
+
+  // captura na chegada: um clique pago novo sobrescreve o anterior
+  try {
+    var qs = new URLSearchParams(location.search);
+    var fresh = {};
+    var has = false;
+    for (var i = 0; i < KEYS.length; i++) {
+      var v = qs.get(KEYS[i]);
+      if (v) { fresh[KEYS[i]] = v.slice(0, 500); has = true; }
+    }
+    if (has) { fresh.landing_url = location.href.slice(0, 500); fresh.ts = Date.now(); save(fresh); }
+  } catch (e) {}
+
+  function attribution() {
+    var a = load();
+    if (!a || !a.ts || Date.now() - a.ts > 30 * 86400000) return {};
+    return a;
+  }
+
+  function isWa(url) {
+    return typeof url === 'string' && /^(https?:\/\/(wa\.me|api\.whatsapp\.com|web\.whatsapp\.com)|whatsapp:)/i.test(url);
+  }
+
+  function withSuffix(href, suffix) {
+    try {
+      var u = new URL(href);
+      var t = u.searchParams.get('text') || '';
+      if (/\(c[oó]d\. [A-Z0-9]{5}\)/.test(t)) return href;
+      // remonta o text com encodeURIComponent (espaço vira %20; searchParams usaria "+")
+      u.searchParams.delete('text');
+      var base = u.toString();
+      return base + (base.indexOf('?') >= 0 ? '&' : '?') + 'text=' + encodeURIComponent((t ? t + '\n\n' : '') + suffix);
+    } catch (e) { return href; }
+  }
+
+  function getCode(cb) {
+    var done = false;
+    function finish(res) { if (!done) { done = true; cb(res); } }
+    var timer = setTimeout(function () { finish(null); }, TIMEOUT);
+    try {
+      var body = attribution();
+      body.slug = SLUG;
+      fetch(API, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+        keepalive: true
+      }).then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (res) { clearTimeout(timer); finish(res); })
+        .catch(function () { clearTimeout(timer); finish(null); });
+    } catch (e) { clearTimeout(timer); finish(null); }
+  }
+
+  var origOpen = window.open;
+
+  // Abre a aba na hora (dentro do clique, pra não ser bloqueada) e só depois troca o endereço
+  function openTracked(href, target, features) {
+    var win = origOpen.call(window, 'about:blank', target || '_blank', features);
+    getCode(function (res) {
+      var finalHref = res && res.suffix ? withSuffix(href, res.suffix) : href;
+      if (win && !win.closed) win.location.href = finalHref;
+      else location.href = finalHref;
+    });
+    return win;
+  }
+
+  window.open = function (url, target, features) {
+    if (isWa(url)) return openTracked(url, target, features);
+    return origOpen.apply(window, arguments);
+  };
+
+  // Links comuns <a href="https://wa.me/...">
+  document.addEventListener('click', function (ev) {
+    var el = ev.target;
+    while (el && el.tagName !== 'A') el = el.parentElement;
+    if (!el || !isWa(el.href)) return;
+    if (ev.defaultPrevented) return; // o próprio site já trata (ex.: botão flutuante chama window.open)
+    ev.preventDefault();
+    if (el.target === '_blank') openTracked(el.href, '_blank');
+    else getCode(function (res) { location.href = res && res.suffix ? withSuffix(el.href, res.suffix) : el.href; });
+  }, false);
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://script.google.com">
@@ -261,7 +370,7 @@ function getMsgInicio() {
 }
 function buildWppUrl(msgExtra) {
   const texto = msgExtra || getMsgInicio();
-  return `https://wa.me/${WPP}?text=${encodeURIComponent(texto)}`;
+  return `https://api.whatsapp.com/send?phone=${WPP}&text=${encodeURIComponent(texto)}`;
 }
 
 let fotos = {};
@@ -813,7 +922,7 @@ function enviar() {
   const tot = carrinho.reduce((s,i) => s+i.p*i.qty, 0);
   msg += `\n*Total estimado: ${fmt(tot)}*\n\nAguardo confirmação! 😊`;
   trackWpp('carrinho', parseFloat(tot.toFixed(2)), carrinho.reduce((s,i) => s+i.qty, 0));
-  window.open(`https://wa.me/${WPP}?text=${encodeURIComponent(msg)}`, '_blank');
+  window.open(`https://api.whatsapp.com/send?phone=${WPP}&text=${encodeURIComponent(msg)}`, '_blank');
 }
 
 function abrirPh(type, id, title, sub) {
