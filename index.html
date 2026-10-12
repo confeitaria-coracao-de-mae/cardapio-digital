@@ -20,7 +20,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   - Pega qualquer abertura do WhatsApp: links <a href="wa.me/..."> e também window.open("https://wa.me/...")
     (é assim que o cardápio abre no botão flutuante e no carrinho).
   - Pede um código ao backend e adiciona "(cód. XXXXX)" no fim da mensagem antes de abrir.
-  - Se o backend demorar mais de 1,5 s ou falhar, abre o WhatsApp normal. O lead nunca se perde.
+  - Se o backend demorar mais de 2,5 s ou falhar, abre o WhatsApp normal. O lead nunca se perde.
 
   Escrito em ES5 para funcionar dentro do GTM. Configure as duas constantes abaixo.
 */
@@ -32,7 +32,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   var SLUG = 'coracao-de-mae';
   var KEYS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
   var STORE = 'rw_attr';
-  var TIMEOUT = 1500;
+  var TIMEOUT = 2500;
 
   function load() { try { return JSON.parse(localStorage.getItem(STORE) || 'null'); } catch (e) { return null; } }
   function save(v) { try { localStorage.setItem(STORE, JSON.stringify(v)); } catch (e) {} }
@@ -80,7 +80,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       body.slug = SLUG;
       fetch(API, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': 'text/plain;charset=UTF-8' }, // requisição simples: sem pré-checagem CORS
         body: JSON.stringify(body),
         keepalive: true
       }).then(function (r) { return r.ok ? r.json() : null; })
@@ -88,6 +88,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         .catch(function () { clearTimeout(timer); finish(null); });
     } catch (e) { clearTimeout(timer); finish(null); }
   }
+
+  // Abre a conexão com o servidor assim que a página carrega (TLS pronto antes do clique)
+  try {
+    var origin = API.replace(/^(https?:\/\/[^\/]+).*$/, '$1');
+    var link = document.createElement('link');
+    link.rel = 'preconnect'; link.href = origin; link.crossOrigin = 'anonymous';
+    (document.head || document.documentElement).appendChild(link);
+    setTimeout(function () { try { fetch(origin + '/health', { mode: 'no-cors', cache: 'no-store' }); } catch (e) {} }, 1500);
+  } catch (e) {}
 
   var origOpen = window.open;
 
