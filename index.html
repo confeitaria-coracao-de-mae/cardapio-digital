@@ -137,12 +137,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--red:#E8191A;--rdk:#B01010;--rlt:#FDF0F0;--blk:#1A0A0A;--wht:#FFFFFF;--g1:#F7F2F2;--g2:#EDE5E5;--tx:#1A0A0A;--tx2:#5A3A3A;--tx3:#9A7A7A}
 body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
-.hero{background:var(--red);padding:16px 20px 14px;position:relative;overflow:hidden;text-align:center}
+.hero{background:var(--red);padding:13px 20px 11px;position:relative;overflow:hidden;text-align:center}
 .hero::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.04) 0,rgba(255,255,255,0.04) 1px,transparent 0,transparent 50%);background-size:20px 20px}
-.logo{width:62px;height:62px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;margin:0 auto 7px;position:relative;z-index:1;border:3px solid rgba(255,255,255,0.22);overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.hn{font-family:'Playfair Display',serif;font-size:23px;font-weight:700;color:white;position:relative;z-index:1}
-.hs{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-top:4px;position:relative;z-index:1}
-.ht{font-size:11px;color:rgba(255,255,255,0.5);margin-top:3px;font-style:italic;position:relative;z-index:1}
+.logo{width:50px;height:50px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;position:relative;z-index:1;border:2.5px solid rgba(255,255,255,0.22);overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.logo svg{width:56px;height:50px}
+.hn{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:white;position:relative;z-index:1;line-height:1.1}
+.hs{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-top:3px;position:relative;z-index:1}
+.ht{font-size:10.5px;color:rgba(255,255,255,0.5);margin-top:2px;font-style:italic;position:relative;z-index:1}
 .admin-badge{position:fixed;top:10px;right:10px;z-index:500;background:var(--red);color:white;border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;letter-spacing:1px;display:none;cursor:pointer}
 .admin-mode .admin-badge{display:block}
 .nav{background:var(--blk);position:sticky;top:0;z-index:100;padding:10px 12px 8px}
@@ -157,39 +158,44 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
   .nb{font-size:9px;padding:7px 6px 6px}
   .nb .ni{font-size:18px}
 }
-.aviso48{background:var(--blk);color:white;text-align:center;font-size:12px;padding:8px 14px;letter-spacing:.3px}
+.aviso48{background:var(--blk);color:white;text-align:center;font-size:11.5px;padding:7px 14px;letter-spacing:.3px}
 .aviso48 b{color:#FFD5D5}
 .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);background:#1A0A0A;color:white;padding:10px 18px;border-radius:24px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:all .25s;z-index:400;white-space:nowrap}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .sec{padding-bottom:80px}
-.covhdr{position:relative;height:96px;overflow:hidden;display:flex;align-items:flex-end}
+.covhdr{position:relative;min-height:58px;overflow:hidden;display:flex;align-items:center}
 .covbg{position:absolute;inset:0;background:var(--red);display:flex;align-items:center;justify-content:center}
 .covbg img{width:100%;height:100%;object-fit:cover;opacity:.4}
-.covbg .noc{font-size:60px;opacity:.18}
-.covol{position:absolute;inset:0;background:linear-gradient(to top,rgba(232,25,26,.93) 0%,rgba(232,25,26,.25) 100%)}
-.covinfo{position:relative;z-index:2;padding:14px 18px;width:100%;display:flex;align-items:flex-end;justify-content:space-between}
-.covtitle{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:white}
-.covsub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:2px}
+.covbg .noc{display:none}
+.covol{position:absolute;inset:0;background:linear-gradient(90deg,rgba(176,16,16,.96) 0%,rgba(232,25,26,.82) 100%)}
+.covinfo{position:relative;z-index:2;padding:11px 18px;width:100%;display:flex;align-items:center;justify-content:space-between}
+.covtitle{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:white;line-height:1.1}
+.covsub{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:2px}
 .btncov{background:rgba(0,0,0,.38);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;display:none}
 .admin-mode .btncov{display:block}
-.subseclabel{background:var(--blk);color:rgba(255,255,255,.85);padding:9px 18px;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:1px;background:var(--g2)}
-.card{background:var(--wht);cursor:pointer;transition:background .15s;display:flex;flex-direction:column;position:relative}
+.subseclabel{background:var(--g1);color:var(--tx2);padding:9px 18px 7px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--g2)}
+/* ===== Layout de lista (menu). Fica elegante COM e SEM foto. ===== */
+.list{display:flex;flex-direction:column;background:var(--wht)}
+.card{display:flex;align-items:center;gap:13px;padding:14px 16px;border-bottom:1px solid var(--g2);background:var(--wht);cursor:pointer;position:relative;transition:background .15s}
+.card:last-child{border-bottom:none}
 .card:hover{background:var(--rlt)}
-.cimg{width:100%;aspect-ratio:1;background:var(--g1);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.cimg img{width:100%;height:100%;object-fit:cover}
-.cimg .noph{font-size:38px;opacity:.2}
-.cedit{position:absolute;inset:0;background:rgba(232,25,26,.88);display:none;align-items:center;justify-content:center;flex-direction:column;gap:3px;color:white;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer}
-.cedit span{font-size:19px}
-.admin-mode .cimg:hover .cedit{display:flex}
-.cbody{padding:10px 11px 12px;flex:1;display:flex;flex-direction:column}
-.cname{font-family:'Playfair Display',serif;font-size:13px;font-weight:400;line-height:1.3;color:var(--tx);margin-bottom:3px;flex:1}
-.cdesc{font-size:11px;color:var(--tx3);line-height:1.35;margin-bottom:7px}
-.cbot{display:flex;align-items:center;justify-content:space-between}
-.cprice{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--red)}
-.cunit{font-size:10px;color:var(--tx3)}
-.bplus{width:27px;height:27px;border-radius:50%;background:var(--red);color:white;border:none;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;transition:background .15s}
+.cbody{flex:1;min-width:0;display:flex;flex-direction:column}
+.cname{font-family:'Playfair Display',serif;font-size:15.5px;font-weight:400;line-height:1.25;color:var(--tx)}
+.cdesc{font-size:12px;color:var(--tx3);line-height:1.4;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cbot{display:flex;align-items:center;gap:11px;margin-top:8px}
+.cprice{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--red);line-height:1}
+.cunit{font-size:10.5px;color:var(--tx3)}
+.bplus{width:30px;height:30px;border-radius:50%;background:var(--red);color:white;border:none;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;transition:transform .12s,background .15s;box-shadow:0 2px 6px rgba(232,25,26,.28)}
 .bplus:hover{background:var(--rdk)}
+.bplus:active{transform:scale(.9)}
+/* miniatura: só existe quando o produto tem foto; sem foto, nada aparece (sem buraco) */
+.cthumb{width:76px;height:76px;border-radius:13px;overflow:hidden;flex-shrink:0;background:var(--g1);box-shadow:0 2px 8px rgba(26,10,10,.08)}
+.cthumb img{width:100%;height:100%;object-fit:cover;display:block}
+/* botão de adicionar foto, por item, visível só no modo admin */
+.cfoto{flex-shrink:0;display:none;align-items:center;justify-content:center;gap:4px;width:76px;height:76px;border-radius:13px;border:1.5px dashed rgba(232,25,26,.5);background:var(--rlt);color:var(--red);font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer;flex-direction:column;text-transform:uppercase}
+.cfoto span{font-size:20px;line-height:1}
+.admin-mode .cfoto{display:flex}
+.admin-mode .cthumb{cursor:pointer}
 .cart{position:fixed;bottom:0;left:0;right:0;background:var(--blk);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;transform:translateY(100%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:200}
 .cart.vis{transform:translateY(0)}
 .ccnt{font-size:10px;color:rgba(255,255,255,.42);letter-spacing:1px;text-transform:uppercase}
@@ -203,6 +209,9 @@ body{font-family:'Lato',sans-serif;background:var(--wht);color:var(--tx)}
 .mimg{width:100%;height:260px;background:var(--g1);display:flex;align-items:center;justify-content:center;border-radius:20px 20px 0 0;overflow:hidden;position:relative}
 .mimg img{width:100%;height:100%;object-fit:cover}
 .nophlg{font-size:58px;opacity:.18}
+/* modal sem foto: faixa curta da marca em vez do bolo fantasma gigante */
+.mimg.nopic{height:72px;background:linear-gradient(90deg,var(--rdk) 0%,var(--red) 100%)}
+.mimg.nopic .mnoph{font-family:'Playfair Display',serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.9)}
 .rbar{position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--red)}
 .mcls{position:absolute;top:11px;right:11px;width:31px;height:31px;border-radius:50%;background:rgba(26,10,10,.5);border:none;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .mbdy{padding:18px 18px 6px}
@@ -410,6 +419,7 @@ function gravarCache(j) {
 }
 
 let admin = false;
+window.admin = false; // espelho p/ handlers inline (WebView WhatsApp/Instagram)
 let catAtiva = 'bolos';
 let carrinho = [];
 let prodAtual = null;
@@ -780,7 +790,7 @@ async function verificaSenha() {
   try { ok = (await sha256(inp.value)) === SENHA_HASH; } catch(e) { ok = false; }
   if (ok) {
     senhaSessao = inp.value;
-    fechaSenha(); admin = true;
+    fechaSenha(); admin = true; window.admin = true;
     document.body.classList.add('admin-mode');
     renderContent();
   } else {
@@ -794,7 +804,7 @@ async function verificaSenha() {
 }
 
 function sairAdmin() {
-  admin = false; senhaSessao = '';
+  admin = false; window.admin = false; senhaSessao = '';
   document.body.classList.remove('admin-mode');
   renderContent();
 }
@@ -821,22 +831,28 @@ function covHdr(cat) {
   </div>`;
 }
 
-function cardH(p, icon) {
+function cardH(p) {
   const foto = gf(p.id);
-  const cardDesc = p.recheio || '';
+  const desc = p.recheio || '';
+  const nomeEsc = p.n.replace(/'/g,"\\'");
+  // Lado direito: miniatura só quando há foto. Sem foto, nada (no modo cliente).
+  // No modo admin, quem não tem foto ganha um botão tracejado "Foto" para subir depois.
+  const direita = foto
+    ? `<div class="cthumb" onclick="if(window.admin){event.stopPropagation();abrirPh('prod','${p.id}','Foto — ${nomeEsc}','Cole a URL da imagem')}">
+         <img src="${foto}" alt="${p.n}" loading="lazy" decoding="async" onerror="this.closest('.cthumb').style.display='none'">
+       </div>`
+    : `<button class="cfoto" onclick="event.stopPropagation();abrirPh('prod','${p.id}','Foto — ${nomeEsc}','Cole a URL da imagem')"><span>📷</span>Foto</button>`;
   return `<div class="card" onclick="abrirProd('${p.id}')">
-    <div class="cimg">
-      ${foto?`<img src="${foto}" alt="${p.n}" loading="lazy" decoding="async" onerror="this.style.display='none'">`:`<span class="noph">${icon}</span>`}
-      <div class="cedit" onclick="event.stopPropagation();abrirPh('prod','${p.id}','Foto — ${p.n.replace(/'/g,"\\'")}','Cole a URL da imagem')"><span>📷</span>Foto</div>
-    </div>
     <div class="cbody">
       <div class="cname">${p.n}</div>
-      ${cardDesc?`<div class="cdesc">${cardDesc}</div>`:''}
+      ${desc?`<div class="cdesc">${desc}</div>`:''}
       <div class="cbot">
-        <div><div class="cprice">${fmt(p.p)}</div>${p.u?`<div class="cunit">por ${p.u}</div>`:''}</div>
-        <button class="bplus" onclick="event.stopPropagation();addD('${p.id}')">+</button>
+        <button class="bplus" onclick="event.stopPropagation();addD('${p.id}')" aria-label="Adicionar ${nomeEsc}">+</button>
+        <div class="cprice">${fmt(p.p)}</div>
+        ${p.u?`<div class="cunit">por ${p.u}</div>`:''}
       </div>
     </div>
+    ${direita}
   </div>`;
 }
 
@@ -844,8 +860,8 @@ function renderContent() {
   const cat = CATS.find(c => c.key === catAtiva); if (!cat) return;
   let html = `<div class="sec">${covHdr(cat)}`;
   cat.grupos.forEach(g => {
-    html += `<div class="subseclabel">${g.t}</div><div class="grid">`;
-    g.itens.forEach(p => { html += cardH(p, cat.icon); });
+    html += `<div class="subseclabel">${g.t}</div><div class="list">`;
+    g.itens.forEach(p => { html += cardH(p); });
     html += '</div>';
   });
   html += '</div>';
@@ -877,9 +893,14 @@ function abrirProd(id) {
     det.innerHTML = detItens.map(([k,v])=>`<div><div class="mdlb">${k}</div><div class="mdvl">${v}</div></div>`).join('');
   } else det.style.display = 'none';
   const foto = gf(id);
-  document.getElementById('mimg').innerHTML = foto
-    ? `<img src="${foto}" style="width:100%;height:100%;object-fit:cover"><div class="rbar"></div>`
-    : `<span class="nophlg">${cat.icon}</span><div class="rbar"></div>`;
+  const mimg = document.getElementById('mimg');
+  if (foto) {
+    mimg.classList.remove('nopic');
+    mimg.innerHTML = `<img src="${foto}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.classList.add('nopic');this.parentElement.innerHTML='<span class=mnoph>${cat.label}</span><div class=rbar></div>'"><div class="rbar"></div>`;
+  } else {
+    mimg.classList.add('nopic');
+    mimg.innerHTML = `<span class="mnoph">${cat.label}</span><div class="rbar"></div>`;
+  }
   document.getElementById('ov').classList.add('open');
   dl('view_item', { item_id: p.id, item_name: p.n, categoria: cat.key, value: p.p, currency: 'BRL' });
 }
